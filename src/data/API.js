@@ -1,4 +1,4 @@
-const gatewayUrl = 'http://localhost:5679/gway'
+const gatewayUrl = window.location.hostname === 'localhost' ? process.env.GATEWAY_LOCAL : process.env.GATEWAY
 const chromaUrl = 'https://ehscan.com'
 const currentDate = new Date().toISOString().split('T')[0];
 import axios from 'axios';
