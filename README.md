@@ -1,3 +1,17 @@
+# Demo 11 2024
+
+- [ ] Project Overview
+  - [ ] Show details
+- [ ] Settings
+- [ ] Login
+- [ ] Upload
+- [ ] Analyze
+- [ ] Result
+- [ ] Change Results
+- [ ] Download Report
+  - [ ] PDF Maybe
+
+
 # Visuals
 
 - https://ionicframework.com/docs/api/action-sheet

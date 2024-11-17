@@ -1,31 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import OverlayDialog from '../dialogs/OverlayDialog';
 import { ImageRenderer } from '../data/images'; const ImageData = new ImageRenderer();
 import { ResultRenderer } from '../data/resultRenderer'; const ResultData = new ResultRenderer();
 import { SummaryRenderer } from '../data/summaryRenderer.js'; const SummaryData =  new SummaryRenderer();
 import { SVG } from '../svg/default'; const svgInst = new SVG();
 import useScrollListener from '../tools/useScrollListener';
 import TokenLibrary from '../text/TokenLibrary'; const textToken = new TokenLibrary();
-import OpacityHeader from '../elements/OpacityHeader';
-//import Loader from '../tools/Loader.js';
+import AssessmentHeader from '../elements/AssessmentHeader';
+import Loader from '../tools/Loader';
+import HazardSegmentDongle from '../elements/HazardSegmentDongle';
+import FloatingActionButtons from '../elements/FloatingActionButtons';
 
 const ProjectResult: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Access the id parameter
-  const [showDialog, setShowDialog] = useState(false);
   const navigate = useNavigate();
-  const [loaded, setLoaded] = useState(false);
   const [legend, setLegend] = useState('');
   const [projects, setProjects] = useState([]);
   const [inputValue, setInputValue] = useState({});
   const [title, setTitle] = useState(id);
   const [inputSha, setInputSha] = useState('');
-  const { scrollRef, isAtTop } = useScrollListener();
+  const { scrollRef, isAtTop } = useScrollListener({ scrollDown: false });
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-        console.log(isAtTop)
-  }, [isAtTop]);
+  const [isFabOpen, setIsFabOpen] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
 
 
   useEffect(() => {
@@ -36,12 +34,12 @@ const ProjectResult: React.FC = () => {
     setProjects(projects)
     setLegend(legend)
 
-    //setProject(await SummaryData.output({ assessment, title }))
+    // setProject(await SummaryData.output({ assessment, title }))
     // const images = await classMap.get('imageRenderer').renderImagesMain()
     // setImages(images);
     setLoading(false)
-    })();
-      setLoaded(true)
+  })();
+
      }, [id]);
 
   const btnClick = (resultIndex) => {
@@ -51,27 +49,45 @@ const ProjectResult: React.FC = () => {
     setShowDialog(true)
   }
 
-  const closeElement = () => navigate(`/projectview/${id}`);  
+  const clickElement = (type) => {
+
+    switch (type) {
+      case 'more':
+        setIsFabOpen(isFabOpen ? false : true)
+        break;
+    
+      default:
+        navigate(`/${id}`);  
+        break;
+    }
+
+
+      console.log('btn')
+    
+   // navigate(`/${id}`);  
+
+
+
+  }
 
   const noResults = () => {
     return (
-              <>
+      <>
         <div className="content-images-info images-bottom-spacer no-results">{textToken.getToken('noResult')}</div>
         </>
     )
   }
 
-const mainElement = () => {
+  const mainElement = () => {
   return (
     <>
+
       <div key="summary-segment" className="summary-segment">
         {projects && projects.length > 0 ? (
-          projects.map(({ status, hazard }, resultIndex) => (
-            <div key={`project-${resultIndex}`} className='summary-row _element'>
-              <div>{hazard}</div>
-              <div dangerouslySetInnerHTML={{ __html: status }} />
+          projects.map((entry, index) => (
+            <div className='project-dongle-list' key={index}>
+                <HazardSegmentDongle entry={entry} project={id}/>
             </div>
-
           ))
         ) : (
           <>{noResults()}</>
@@ -81,29 +97,23 @@ const mainElement = () => {
   );
 };
 
-
   return (
     <>
-    <OpacityHeader isAtTop={isAtTop} title={title} closeElement={closeElement}/>
+    <AssessmentHeader menuOpen={isFabOpen} title={title} clickElement={clickElement} segment="assessment_chart"/>
+    <FloatingActionButtons isOpen={isFabOpen} setShowDialog={setShowDialog} setIsOpen={setIsFabOpen} project={id} type="assessment" position="top" />
+    {loading ? ( <Loader /> ) : (
+    <>
       <div className="app-container-result result-page">
-        <main ref={scrollRef} className={`content image-result ${loaded ? 'fade-in' : ''}`}>
+        <main ref={scrollRef} className={`content image-result ${!loading ? 'fade-in' : ''}`}>
           {mainElement()}
         </main>
-      <OverlayDialog 
-      isOpen={showDialog}
-      sha={inputSha}
-      entryValue={inputValue}
-      onClose={() => {
-        setShowDialog(false)
-        setDialogChanged(true)
-      }
-      }
-      />
       <footer className="footer">
         {legend && (
           <div key="legend" dangerouslySetInnerHTML={{ __html: legend }} />
         )}</footer>
       </div>
+        </>
+      )}
     </>
   );
 };

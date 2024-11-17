@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import TokenLibrary from '../text/TokenLibrary'; const textToken = new TokenLibrary();
 import { SVG } from '../svg/default'; const svgInst = new SVG();
-import ProjectDongle from '../components/ProjectDongle';
+import ProjectDongle from '../elements/ProjectDongle';
 import classMap from '../tools/sharedMap';
 // interface OverlayDialogProps {
 //   isOpen: boolean;

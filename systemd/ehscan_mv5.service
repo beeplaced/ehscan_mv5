@@ -1,0 +1,11 @@
+[Unit]
+Description=ehscan_mv5
+
+[Service]
+Type=simple
+ExecStart=/bin/bash /root/DEV/ehscan_mv5/systemd/start.sh
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

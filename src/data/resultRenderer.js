@@ -180,7 +180,7 @@ const resultLiterals = {
         const hazards = RISK_ASSESSMENT
         .filter(f => !f.deleted)
         .sort((a, b) => b.risk_rating - a.risk_rating)
-        .map(({ c, hazard, type, likelihood, severity, risk_rating, comment, area, decision, compliance, solved = false }) => {
+            .map(({ c, hazard, type, likelihood, severity, risk_rating, comment, area, decision, compliance, solved = false, safeguards }) => {
             console.log(compliance)
             const { action, bck_color } = getHazardRangeColor(risk_rating)
 
@@ -203,14 +203,15 @@ const resultLiterals = {
                 c,
                 likelihood, severity,
                 ratingClr: bck_color,
-                title: hazard,
+                title: hazard, //area ? `${hazard} - ${area}` : hazard,
                 subTitle: type,
                 maintext: decision,
                 subText: undefined,
                 comment,
                 compliance: complianceTerm || undefined,
                 checked: solved,
-                action
+                action: action,
+                safeguards
             };
 
                 console.log(res)

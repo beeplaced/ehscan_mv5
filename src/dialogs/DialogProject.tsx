@@ -4,6 +4,7 @@ import AutoGrowingTextarea from '../tools/AutoGrowingTextarea';
 import { API } from '../data/API.js'; const api = new API();
 import TokenLibrary from '../text/TokenLibrary'; const textToken = new TokenLibrary();
 import { SVG } from '../svg/default'; const svgInst = new SVG();
+import ButtonRipple from '../elements/ButtonRipple';
 
 interface OverlayDialogProps {
 
@@ -73,13 +74,31 @@ const DialogProject: React.FC<OverlayDialogProps> = ({ entryValue, setNewProject
     )
   }
 
+  const handleButtonClick = () => {
+    console.log('s')
+  }
+
     const footer = () => {
     return (
       <>
       <div className='dialog-footer'>
-        <div className='dialog-footer'>
-                <div className='btn-row'>
-                <div className={`btn change ${flicker ? '_flicker' : ''}`} onClick={() => saveProject()}>{btnTitle}</div>
+        <div className='btn-row create'>
+      {existingProject && (
+        <div className="svg-btn" onClick={handleButtonClick}>
+        <ButtonRipple index="0" text="trash"/>
+        </div>
+        )}
+        <div className="def-btn" onClick={() => saveProject()}>
+        <ButtonRipple index="1" text={textToken.getToken('saveProject')}/>
+        </div>
+        {existingProject && (
+        <div className="svg-btn" onClick={() => enterNewProject()}>
+        <ButtonRipple index="0" text="forward"/>
+        </div>
+        )}
+
+
+          {/* <div className={`btn change ${flicker ? '_flicker' : ''}`} onClick={() => saveProject()}>{btnTitle}</div>
                 {existingProject && (
                   <>
                   <div className='btn-added'>
@@ -87,9 +106,9 @@ const DialogProject: React.FC<OverlayDialogProps> = ({ entryValue, setNewProject
                   <div className='btn trash' onClick={() => enterNewProject()}>go</div>
                   </div>
                   </>
-                  )}
+                  )} */}
                 </div>
-            </div></div>
+            </div>
       </>
     )
   };

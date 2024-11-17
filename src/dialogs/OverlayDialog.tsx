@@ -5,6 +5,7 @@ import Slider from '../tools/Slider';
 import { API } from '../data/API.js'; const api = new API();
 import TokenLibrary from '../text/TokenLibrary'; const textToken = new TokenLibrary();
 import { SVG } from '../svg/default'; const svgInst = new SVG();
+import ButtonRipple from '../elements/ButtonRipple';
 
 interface OverlayDialogProps {
   isOpen: boolean;
@@ -18,7 +19,6 @@ const OverlayDialog: React.FC<OverlayDialogProps> = ({ isOpen, entryValue, sha, 
 const [inputValue, setInputValue] = useState(entryValue);
 const [valInputValue, setValInputValue] = useState({});
 const [valuesEqual, setValuesEqual] = useState(true);
-const [flicker, setFlicker] = useState(false)
 const [isAtTop, setIsAtTop] = useState(true);
 const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -41,14 +41,6 @@ const scrollRef = useRef<HTMLDivElement>(null);
 
 
   }, [inputValue]);
-
-    useEffect(() => {
-    setFlicker(true)
-      setTimeout(() => {
-        setFlicker(false)
-      }, 500); // 500ms matches the animation duration
-  }, [valuesEqual]);
-
 
   const deepEqual = (obj1, obj2) => {
     if (obj1 === obj2) return true; // Identical objects are equal
@@ -102,7 +94,7 @@ const scrollRef = useRef<HTMLDivElement>(null);
         //check save is good
 
         //close Dialog
-onClose()
+  onClose()
   };
 
     // Handler to update the slider values
@@ -204,16 +196,18 @@ onClose()
     return (
       <>
       <div className='dialog-footer'>
-        <div className='dialog-footer'>
-                <div className='btn-row'>
-                <div className={`btn change ${flicker ? '_flicker' : ''}`} onClick={() => saveElement()}>Save Assessment</div>
-                <div className='btn trash' dangerouslySetInnerHTML={{ __html: svgInst.trash_can() }}></div>
-                </div>
-            </div></div>
+        <div className='btn-row'>
+        <div className="svg-btn">
+        <ButtonRipple index="0" text="trash"/>
+        </div>
+        <div className="def-btn" onClick={() => saveProject()}>
+        <ButtonRipple index="1" text={textToken.getToken('editHazard')}/>
+        </div>
+          </div>
+          </div>
       </>
     )
   };
-
   return (
     <>
     {isOpen && (

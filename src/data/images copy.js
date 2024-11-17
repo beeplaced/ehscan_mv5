@@ -19,78 +19,7 @@ export class ImageRenderer {
         this.searchProject = localStorage.getItem('searchProject') || ''
     }
 
-    loadProjectImagesxxx = async (project) => {
-        let startTime = performance.now();
-        const output = await _storage.getData({ value: project, field: 'project' });
-        const res = await this.createValidImageObjects(output.data)
-        console.log('createThisBlobs:', this.executionTime(startTime));
-        return res
-    }
 
-    loadProjectImages = async (project) => {
-        let startTime = performance.now();
-        this.project = project
-        //load project from DB
-        const allAPI = await api.getProjectImageInfo(project)
-        // console.log('get Images from DB', allAPI)
-        //sha, project, score, clr
-        const { data } = await _storage.getData({ value: project, field: 'project' });
-        let allDB = data //await _storage.getAllData(); //console.log('get Images from DB', allDB)
-        await this.checkImagesinDBwithAPI({ allDB, allAPI })//check all Data from DB
-        const allDBShas = allDB.map(db => db.sha);
-        const imagesMissingInDB = allAPI.filter(a => !allDBShas.includes(a.sha))
-        if (imagesMissingInDB.length > 0){
-            const newData = await this.addMissingDatainDB(imagesMissingInDB); console.log("newData", newData)
-        }
-        const output = await _storage.getData({ value: project, field: 'project' });
-        // console.log('loadProjectImages', this.executionTime(startTime));     
-        // console.log(output)
-        startTime = performance.now();
-        const res = await this.createValidImageObjects(output.data)
-        console.log('createThisBlobs:', this.executionTime(startTime));
-        return res
-    }
-
-    createValidImageObjects = async (data) => {
-
-        const delItems = []
-
-        const promises = data
-            //.sort((a, b) => a.score - b.score)
-            .sort((a, b) => a.id - b.id)
-            .map(({ blob, id, project, score, clr }) => {
-                const url = URL.createObjectURL(blob);
-
-                return new Promise((resolve) => {
-                    const img = new Image();
-
-                    img.onload = () => {
-                        resolve({
-                            imgBlob: url,
-                            id,
-                            project,
-                            ...(score !== undefined && { score }),
-                            ...(clr !== undefined && { clr }),
-                        });
-                    };
-
-                    img.onerror = () => {
-                        delItems.push(id)
-                        console.warn(`Blob with ID ${id} is invalid.`);
-                        resolve(null); // or handle broken blobs differently
-                    };
-
-                    img.src = url;
-                });
-            });
-
-        // Wait for all promises and filter out invalid blobs
-        const results = await Promise.all(promises);
-        if (delItems.length > 0) {
-            await this.removeImages(delItems)
-        }
-        return results.filter(Boolean);
-    };
 
     sortByProject = async (project) => {
         return new Promise(async (resolve) => {
@@ -125,7 +54,7 @@ export class ImageRenderer {
                 const { sha, project } = dbData
                 const apiDataInDB = allAPI.find(api => api.sha === sha);
 
-                if (!apiDataInDB && this.searchProject === '') { //remove from DB, if all data is considered
+                if (!apiDataInDB && this.searchProject === '') { //remove from DB, if all data is considdered
                     const removeDBData = await _storage.deleteDataBySha(sha); console.log("removeDBData", removeDBData)
                 }
 
@@ -145,8 +74,18 @@ export class ImageRenderer {
             if (imagesMissingInDB.length > 0) {
                 const startTime = performance.now();
                 const newData = await api.getImageBatchAPI(imagesMissingInDB)//.slice(0, 30))
-                console.log('api.getImageBatchAPI', this.executionTime(startTime));
+                console.log('api.getImageBatchAPI Slice 30', this.executionTime(startTime));
                 console.log(imagesMissingInDB)
+                // for (const missingDbData of imagesMissingInDB) {
+                //     //console.log('get missingDbData', missingDbData)
+                //     const { sha, project } = missingDbData
+
+                //     startTime = performance.now();
+                //     const blob = await api.getImageAPI({ sha, database: 'image_results' })
+                //     console.log('api.getImageAPI', this.executionTime(startTime));
+                //     const storeMissingData = await this.storeImageDB({ sha, blob, project });
+                //     //console.log("storeMissingData", storeMissingData, blob)
+                // }
                 resolve(newData)
             }
             resolve([])
@@ -280,7 +219,9 @@ export class ImageRenderer {
             }
             resolve()
         })
+    
     }
+
 
     moveItems = async (updateItems, filteredItems, lastIndex) => {
         return new Promise(async (resolve) => {
@@ -346,7 +287,6 @@ export class ImageRenderer {
                 console.log(`blob`, blob)
                 const { sha } = await api.sendImageGateway(preparedFile);
                 console.log("sha", sha)
-
                 await this.storeImageDB({ sha, blob, project: this.project }); 
                 const { data } = await _storage.getData({ value: sha });
                 const { id, project } = data[0];

@@ -1,19 +1,26 @@
 import { useState, useEffect, useRef } from 'react';
 import { SVG } from '../svg/default'; const svgInst = new SVG();
+import RadioButton from '../tools/RadioButton';
 
 const SwitchToggle = ({ result, onChange }) => {
     const [selected, setSelected] = useState(false);
+    const [selTag, setSelTag] = useState('');
     const [on, setOn] = useState('');
     const [off, setOff] = useState('');
+    const [selection, setSelection] = useState('');
     const sliderBoxRef = useRef(null);
 
-        useEffect(() => {
-        setSelected(result.selected || false)
+    useEffect(() => {
+
+        console.log(result.selected)
+        if (result.selected) setSelTag(result.selected)
+        setSelected(result.selected === false ? false : true)
     }, [result.selected]);
 
     useEffect(() => {
         setOn(result.on || '');
         setOff(result.off || '');
+        if (result.selection) setSelection(result.selection)
     }, [result]);
 
     const sliderBoxFlicker = () => {
@@ -63,12 +70,34 @@ const SwitchToggle = ({ result, onChange }) => {
         }
     };
 
+
+const selectionElement = () => {//RADIO
+    return (
+        <>
+            {selection.map(({tag, txt}, index) => (
+                <div className="switch-selection" key={index}>
+                    <RadioButton selected={tag === selTag} rkey={index}/>
+                    {txt}</div>
+            ))}
+        </>
+    );
+};
+
     return (
         <>
         <div className="slider _element" onClick={handleClick}>
         <div className="slider-txt">
             <div className='slider-txt-title'>{result.description}</div>
-            <div className='slider-txt-toggle'>{selected === true ? on : off}</div></div>
+            {selected && (
+                <>
+                {selectionElement()}
+                </>
+            )}
+
+
+
+            {/* <div className='slider-txt-toggle'>{selected === true ? on : off}</div> */}
+            </div>
             <div className="slider-wrapper">
                 <div className="_sliderbox" ref={sliderBoxRef}>
                     <div className={`slider-box-outer ${selected === true ? 'deactivate-sliderbox' : ''}`}>

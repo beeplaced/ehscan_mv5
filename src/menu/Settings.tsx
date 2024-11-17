@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import DropDownMenu from '../tools/DropDownMenu';
 import SwitchToggle from '../tools/SwitchToggle';
 const retrievedSettings = localStorage.getItem('settings');
 const settingsObj = JSON.parse(retrievedSettings); // Convert back to object
 console.log(settingsObj)
+import { SVG } from '../svg/default'; const svgInst = new SVG();
+import useRipple from '../tools/useRipple';  // Import the custom hook
+
 const Settings: React.FC = () => {
 
+const buttonRef = useRef(null);
 const [settingsObject, setSettingsObject] = useState(settingsObj);
 
 const onChange = (newSettings) => {
@@ -66,18 +70,49 @@ const onChange = (newSettings) => {
     localStorage.setItem('settings', JSON.stringify(updatedSettings));
 };
 
+
+const handleRipple = useRipple(); // Use the custom hook
+
+const handleButtonClick = (event) => {
+    console.log('a')
+    handleRipple(event, buttonRef);
+  };
+
 return (
 <>
 <main className="content settings">
+
+<div ref={buttonRef} className='ripple-container settings-box-ripple switch-element' onClick={handleButtonClick}>
+    <div className='user-circle'>cd</div>
+    <div className='switch-element-inner'>
+        <div className='switch-element-inner-title'>CD</div>
+        <div>carsten@ehscan.com</div>
+        </div>
+        <div dangerouslySetInnerHTML={{ __html: svgInst.move_forward() }}></div>
+        </div>
+
+
 <div className='settings-box'>
 <div className='settings-box-title'>Image View</div>
-<SwitchToggle result={{ title: 'projectflow',
+{/* <SwitchToggle result={{ title: 'projectflow',
             type: 'slider',
             description: 'Images to be shown',
             on: "as a constant flow of images",
             off: "divided by project",
             selected: settingsObject.projectflow
-        }} onChange={onChange} />
+        }} onChange={onChange} /> */}
+<SwitchToggle result={{ title: 'sortby',
+            type: 'slider',
+            description: 'Define Sort Order of Images',
+            on: "date",
+            off: "-",
+            selection: [
+                {tag: 'byid', txt: 'by id'}, 
+                {tag: 'byscore', txt: 'by score'},
+                {tag: 'bydate', txt: 'by date'}
+            ],
+            selected: settingsObject.sortby
+        }} onChange={onChange} /> 
     <div className='settings-element _element'>
     <div className='settings-element-text'>Images to be diplayed in a row</div>
     <DropDownMenu result={{

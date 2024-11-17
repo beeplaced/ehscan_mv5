@@ -15,7 +15,7 @@ const OverlayDialog: React.FC<OverlayDialogProps> = ({ isOpen, onClose, initProj
 
 const navigate = useNavigate();
 const [newProject, setNewProject] = useState('');
-const [title, setTitle] = useState(textToken.getToken('projects'));
+const [title, setTitle] = useState('Neues Projekt anlegen');
 const [footerContent, setFooterContent] = useState('');
 const swiperRef = useRef(null);
 const [isAtTop, setIsAtTop] = useState(true);
@@ -47,7 +47,7 @@ const [inputValue, setInputValue] = useState(init);
   }
 
     useEffect(() => {//Closed by inner Dialog
-      if (newProject !== '') navigate(`/projectview/${newProject}`);  
+      if (newProject !== '') navigate(`/${newProject}`);  
       if (dialogClose) closeDialog();
   }, [dialogClose]);
 
@@ -60,7 +60,6 @@ const [inputValue, setInputValue] = useState(init);
   const header = () => {
     return (
         <header className={`dialog-header ${!isAtTop ? 'shrink' : ''}`}>
-          <div className='dialog-header-svg-icon' dangerouslySetInnerHTML={{ __html: svgInst.pencil() }}></div>
           <div className='header-title _t'>{isAtTop && title}</div>
           <div className="header-close" onClick={() => closeDialog()}>{textToken.getToken('close')}</div>
         </header>

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import AutoGrowingTextarea from '../tools/AutoGrowingTextarea';
 import { API } from '../data/API.js'; const api = new API();
 import TokenLibrary from '../text/TokenLibrary'; const textToken = new TokenLibrary();
+import ButtonRipple from '../elements/ButtonRipple';
 
 interface OverlayDialogProps {
   isOpen: boolean;
@@ -62,6 +63,7 @@ const scrollRef = useRef<HTMLDivElement>(null);
   };
 
   const saveElement = async () => {
+
 
   const contentEntry = {
       ...entryValue,
@@ -140,15 +142,16 @@ const scrollRef = useRef<HTMLDivElement>(null);
     )
   };
 
-  const footer = () => {
+    const footer = () => {
     return (
       <>
       <div className='dialog-footer'>
-        <div className='dialog-footer'>
-                <div className='btn-row-center'>
-                {!valuesEqual ? (<div className='btn report' onClick={() => saveElement()}>create analysis task</div>) : <div></div>}
-                </div>
-            </div></div>
+        <div className='btn-row-single'>
+        <div className="small-btn" onClick={() => saveElement()}>
+        <ButtonRipple index="1" text={textToken.getToken('evaluateTask')}/>
+        </div>
+        </div>
+        </div>
       </>
     )
   };

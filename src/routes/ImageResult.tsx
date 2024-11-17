@@ -3,16 +3,16 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import OverlayDialog from '../dialogs/OverlayDialog';
 import ReEvaluateContext from '../dialogs/ReEvaluateContext';
-import OpacityHeader from '../elements/OpacityHeader';
+import ResultHeader from '../elements/ResultHeader';
 import { ImageRenderer } from '../data/images'; const ImageData = new ImageRenderer();
 import { ResultRenderer } from '../data/resultRenderer'; const ResultData = new ResultRenderer();
 import { SVG } from '../svg/default'; const svgInst = new SVG();
 import ResultInfo from '../components/ResultInfo';
 import useScrollListener from '../tools/useScrollListener';
 import TokenLibrary from '../text/TokenLibrary'; const textToken = new TokenLibrary();
-//import Loader from '../tools/Loader.js';
-import ProjectRoute from '../components/ProjectRoute';
+import ButtonRipple from '../elements/ButtonRipple';
 import Popup from '../dialogs/Popup';
+
 
 const ImageResult: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Access the id parameter
@@ -37,7 +37,9 @@ const ImageResult: React.FC = () => {
   const [inputValue, setInputValue] = useState({});
   const [inputSha, setInputSha] = useState('');
   const [rerender, setRerender] = useState(false);
-  const { scrollRef, isAtTop } = useScrollListener();
+  const [context, setContext] = useState('');
+  const [description, setDescription] = useState('');
+  const { scrollRef, isAtTop } = useScrollListener({ scrollDown: false });
   const [outputHazards, setOutputHazards] = useState([]);
   
   const handleSlideChange = (swiper) => {
@@ -106,8 +108,9 @@ const ImageResult: React.FC = () => {
         console.log( hazards, result )
         if (Title) setTitle(Title)
         setOutputHazards(hazards)
-        // setOutputResults(outputResults)
-        // setBaseData(baseData)
+        const { context, description } = result
+        if (context) setContext(context)
+        if (description) setDescription(description)
         setReEvaluate(true)
         }
       setLoaded(true)
@@ -127,10 +130,10 @@ const ImageResult: React.FC = () => {
   }
 
   const btnRevalClick = () => {
-    setShowReval(true)
+        setTimeout(() => { setShowReval(true) }, 200);
   }
 
-  const closeElement = () => navigate(`/projectview/${project}`);  
+  const closeElement = () => navigate(`/${project}`);  
 
   const noResults = () => {
     return (<>
@@ -143,32 +146,22 @@ const ImageResult: React.FC = () => {
       <>
         {comment && (
             <>
-                  <div className='comment-wrapper'>
-                  <div className='comment-main'>
-                  <div dangerouslySetInnerHTML={{ __html: svgInst.comment() }}></div>
-                  <div className='comment-text'>{comment.comment}</div>
+            <div className='comment-wrapper'>
+              <div className='comment-main'>
+                <div dangerouslySetInnerHTML={{ __html: svgInst.comment() }}></div>
+                <div className='comment-text'>{comment.comment}</div>
                 </div>
-              <div className='datetime-token'>{comment.timestamp}</div>
+                <div className='datetime-token'>{comment.timestamp}</div>
               </div>
               </>
-              )}
+          )}
       </>
     )
   }
 
   const assessmentElement = (element, resultIndex) => {
 
-  // const element = {
-  //   ratingClr: 'green',
-  //   title: "Oil leakage from waste containers",
-  //   subTitle: 'Hazards related to Substances',
-  //   maintext: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.',
-  //   subText: 'At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.',
-  //   checked: false,
-  //   action: 'Monitor closely'
-  // }
-    console.log(element)
-    const { ratingClr, title, subTitle, maintext, subText, comment, compliance, checked, action } = element
+    const { ratingClr, title, subTitle, maintext, subText, comment, compliance, checked, action, safeguards } = element
     return (
       <>
       <div className='result-loop-main-wrapper'>
@@ -189,6 +182,15 @@ const ImageResult: React.FC = () => {
                 </div>
                 </div>
                 <div className='result-loop-action-row'>{action}</div>
+                {safeguards && (
+                  <div className='result-loop-safeguard-row'>
+                    <ul>
+                      {safeguards.split('.').map((safeguard, index) => 
+                        safeguard.trim() && <li key={index}>{safeguard.trim()}</li>
+                      )}
+                    </ul>
+                  </div>
+                )}
                 <div className='result-loop-main-text'>{maintext}</div>
                 {commentElement(comment)}
                 </div>
@@ -203,7 +205,7 @@ const ImageResult: React.FC = () => {
         <SwiperSlide key={1}>
                 {elements ? (
                   <>
-                    {<ProjectRoute project={project}/>}
+                    {/* {<ProjectRoute project={project}/>} */}
                     <div className='image-result-wrapper'>
                       <div className='image-result-box'>
                         <div className='image-result-box-image'>
@@ -211,6 +213,7 @@ const ImageResult: React.FC = () => {
                             <img src={image.imgBlob} alt="image" data-sha={image.sha} />
                           )}
                         </div>
+                          <div className='result-loop-main-title'>{textToken.getToken('riskAssessment')}</div>
                           {outputHazards && outputHazards.length > 0 ? (
                             outputHazards.map((result, resultIndex) => (
                               <React.Fragment key={resultIndex}>
@@ -222,7 +225,24 @@ const ImageResult: React.FC = () => {
                               {noResults()}
                             </>
                           )}
-                         
+
+                          {context && (
+                              <>
+                              <div className='result-loop-main-title'>{textToken.getToken('context')}</div>
+                               <div className='result-loop-sub-wrapper'>
+                              {context}
+                              </div>
+                              </>
+                          )}
+                          {description && (
+                              <>
+                              <div className='result-loop-main-title'>{textToken.getToken('description')}</div>
+                               <div className='result-loop-sub-wrapper'>
+                              {description}
+                              </div>
+                              </>
+                          )}
+
                         {/* <div className='results-segments'>
                           {outputResults && outputResults.length > 0 ? (
                             outputResults.map((result, resultIndex) => (
@@ -284,7 +304,9 @@ const ImageResult: React.FC = () => {
     <div className='results-segments'>
     {reEvaluate && (
       <div className='btn-row-center'>
-        <div className='btn info' onClick={ () => btnRevalClick() }>re-evaluation</div>
+        <div className="footer-btn" onClick={() => btnRevalClick()}>
+        <ButtonRipple index="1" text={textToken.getToken('reEval')}/>
+        </div>
         </div>
       )}
     </div></>
@@ -293,7 +315,7 @@ const ImageResult: React.FC = () => {
 
   return (
     <>
-    <OpacityHeader isAtTop={isAtTop} title={title} closeElement={closeElement}/>
+    <ResultHeader isAtTop={isAtTop} title={title} closeElement={closeElement}/>
       <div className="app-container-result result-page">
       <main ref={scrollRef} className={`content image-result ${loaded ? 'fade-in' : ''}`}>
           <Swiper 

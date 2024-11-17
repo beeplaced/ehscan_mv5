@@ -53,6 +53,8 @@ opacity: 1; /* Make visible when open */
     background-color: var(--dialog-bck-clr);
     border-radius: 0 0 var(--dialog-border-radius) var(--dialog-border-radius); 
         min-height: 35px;
+            display: flex;
+    justify-content: center;
 }
 
 /* Settings */
@@ -61,33 +63,42 @@ opacity: 1; /* Make visible when open */
     margin: 20px;
 }
 
-.settings-box{
-    /* background-color: white;
+.settings-box:not(:first-child) {
+    margin: 25px 0;
+}
+
+.slider-wrapper{
+    display: flex;
+    align-items: flex-start;
+    height: 100%;
+}
+
+.settings-box-ripple{
+      --ripple-effect-bck: rgba(0, 0, 0, 0.15); /* Darker ripple effect */
+    --btn-padding: 10px;
+    --btn-bck-clr: var(--input-bck-clr);
+    --btn-clr: var(--text-color) ;
+    --btn-border-radius: var(--project-border-radius);
+    border-radius: var(--btn-border-radius);
     width: 100%;
-    padding: 10px 15px;
-    border-radius: 8px;
-    margin: 15px 0; */
 }
 
 .settings-box-title{
-    color: lightslategray;
-    font-weight: 300;
+    color: var(--c-carbon-40);
+    font-weight: 200;
     text-align: left;
     white-space: break-spaces;
     margin: 0 0 3px 4px;
 }
 
 .dialog-content-project-title{
-    display: flex;
+  display: flex;
     flex-direction: row;
     align-items: center;
-    background-color: beige;
     padding: 5px;
-    border-radius: var(--project-border-radius);
-    box-shadow: var(--project-box-shadow);
-    background-color: lightblue;
-    padding: 5px;
+    background-color: floralwhite;
     font-weight: 700;
+    border-radius: 50px;
 }
 
 ._flicker {
@@ -109,9 +120,18 @@ opacity: 1; /* Make visible when open */
 
 .fab-container {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  right: 15px;
+  z-index: 9999;
 }
+
+.fab-container.bottom {
+  bottom: 100px;
+}
+
+.fab-container.top {
+top: calc(var(--header-height) + 5px);
+}
+
 
 .fab {
   background-color: #6200ea;
@@ -126,24 +146,15 @@ opacity: 1; /* Make visible when open */
 }
 
 .fab-buttons {
-display: flex;
+    display: flex;
     flex-direction: column;
     align-items: self-end;
-    position: absolute;
-    bottom: 80px;
-    right: 0;
-}
-
-.fab-button {
-  margin-top: 10px;
-  padding: 10px 20px;
-  background-color: #bb86fc;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  opacity: 0;
-  animation: fadeIn 0.3s ease forwards;
-  width: max-content;
+    --btn-padding: 7px 15px;
+    --btn-bck-clr: var(--attention-clr-4);
+    --btn-clr: white;
+    --btn-border-radius: 12px;
+    font-weight: 400;
+    border-radius: var(--btn-border-radius);
 }
 
 @keyframes fadeIn {

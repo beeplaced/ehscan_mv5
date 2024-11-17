@@ -1,0 +1,49 @@
+.user-management {
+align-items:center;
+display:flex;
+flex-direction:column;
+justify-content:center;
+margin:40px
+}
+
+.user-tag {
+align-items:center;
+background-color: darkorchid;
+color: var(--body-color);
+border-radius:50%;
+box-shadow:#3c40434d 0 1px 2px 0px,#3c404326 0 1px 3px 1px;
+display:flex;
+font-size:x-large;
+font-weight:600;
+height:50px;
+justify-content:center;
+padding:50px;
+width:50px
+}
+
+.account-name{
+font-size:xx-large;
+font-weight:300;
+margin: 10px 0 0 0;
+text-align:center;
+width:100%;
+color: var(--c-carbon-60);
+}
+
+.user-name {
+font-size:xx-large;
+font-weight:500;
+margin: 20px 0 0 0;
+text-align:center;
+width:100%;
+color: var(--text-color);
+}
+
+.user-email {
+font-size: large;
+font-weight: 300;
+margin: 0 0 20px 0;
+text-align: center;
+width: 100%;
+color: var(--text-color);
+}

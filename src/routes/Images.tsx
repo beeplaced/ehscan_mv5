@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ImageBox from '../components/ImageBox';
 import ImageFooter from '../components/ImageFooter';
-import ImageHeaderButton from '../components/ImageHeaderButton';
+import ImageHeaderButton from '../elements/ImageHeaderButton';
 import OverlayProjects from '../components/OverlayProjects';
 import { useNavigate } from 'react-router-dom';
 

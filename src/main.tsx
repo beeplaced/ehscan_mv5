@@ -47,8 +47,8 @@ const Main = () => {
 
       useEffect(() => {
       (async () => {
-        await ImageData.initBlobs()
-        classMap.set('ImageData', ImageData);
+        // await ImageData.initBlobs()
+        // classMap.set('ImageData', ImageData);
         setLoading(false)
       })();
     }, []);

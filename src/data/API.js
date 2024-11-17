@@ -4,8 +4,30 @@ const currentDate = new Date().toISOString().split('T')[0];
 import axios from 'axios';
 import { IndexedDB } from './IDB.js'; const _storage = new IndexedDB();
 const tenant = localStorage.getItem('tenant');
+import { getHazardRangeColor } from '../data/levels.js';
+
 
 export class API {
+
+    getProjectOverview = async () => {//get all for now
+        const headers = {
+            tenant
+        }
+        try {
+            const options = {
+                url: `${gatewayUrl}/get-project-overview`,
+                method: 'GET',
+                headers
+            };
+            const response = await axios(options);
+            const result = response.data.result
+            console.log(result)
+            return result;
+        } catch (error) {
+            console.error('Error sending image:', error);
+            throw error;
+        }
+    };
 
     getProject = async (project) => {
         const headers = {
@@ -20,11 +42,30 @@ export class API {
             };
             const response = await axios(options);
             const result = response.data.result
+            console.log(result)
             return result;
         } catch (error) {
             console.error('Error sending image:', error);
             throw error;
         }
+    };
+    
+    getProjectImageInfo = async (project) => {
+    const headers = { project, tenant };
+    try {
+        const options = {
+            url: `${gatewayUrl}/get-project-image-info`,
+            method: 'GET',
+            headers,
+        };
+
+        const { data } = await axios(options);
+        const { result } = data
+        return result
+    } catch (error) {
+        console.error('Error fetching full message data:', error.message || error);
+        return {}; // Return an empty array if there's an error
+    }
     };
 
     //0
@@ -70,14 +111,14 @@ export class API {
 
     getImageBatchAPI = async (allAPI) => {
 
-        const imagePromises = allAPI.map(async ({ sha, project }) => {
+        const imagePromises = allAPI.map(async ({ sha, project, score }) => {
             const headers = {
                 sha,
                 tenant
             } 
             const response = await fetch(`${gatewayUrl}/images-renderer`, { headers });
             const blob = await response.blob();
-            const store = await this.storeImageDB({ sha, blob, project })
+            const store = await this.storeImageDB({ sha, blob, project, score })
             return { blob, project, store };
             });
             const urls = await Promise.all(imagePromises);
@@ -127,13 +168,17 @@ export class API {
     };
 
     storeImageDB = async (entry) => {
-        const { sha, blob, project } = entry
+        const { sha, blob, project, score } = entry
         const storeData = {
             sha,
             blob,
             date: currentDate,
             project: project
         };
+
+        storeData.score = score || 0
+        storeData.clr = score ? getHazardRangeColor(score).bck_color : ''
+
         const store = await _storage.storeData(storeData);
         if (store.status === 201) return await _storage.updateData(storeData);
         return store

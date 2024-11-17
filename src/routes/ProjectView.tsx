@@ -1,50 +1,48 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ImageRenderer } from '../data/images'; const ImageData = new ImageRenderer();
-import { SVG } from '../svg/default'; const svgInst = new SVG();
 import useScrollListener from '../tools/useScrollListener';
-import TokenLibrary from '../text/TokenLibrary'; const textToken = new TokenLibrary();
-import OpacityHeader from '../elements/OpacityHeader';
+import MainHeader from '../elements/MainHeader';
 import ImageFooter from '../components/ImageFooter';
 import ImageLoop from '../components/ImageLoop';
-import classMap from '../tools/sharedMap';
+import Loader from '../tools/Loader';
 
-const ProjectResult: React.FC = () => {
+//const ProjectView: React.FC = () => {
+  const ProjectView = () => {
   const { id } = useParams<{ id: string }>(); // Access the id parameter
-
-  const navigate = useNavigate();
-  const [loaded, setLoaded] = useState(false);
-  const [projects, setProjects] = useState([]);
+  const contentContainerRef = useRef<HTMLDivElement>(null)
   const [title, setTitle] = useState('');
-  const { scrollRef, isAtTop } = useScrollListener();
+  const [scrollDownTrigger, setScrollDownTrigger] = useState(false);
+  const { scrollRef, isAtTop } = useScrollListener({ scrollDown: true, scrollDownTrigger });
   const [loading, setLoading] = useState(false);
+  const [pop, setPop] = useState(false);
   const [edit, setEdit] = useState(false);
   const [images, setImages] = useState([]);
   const [itemsToSync, setItemsToSync] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [incompleteItems, setIncompleteItems] = useState([]);
-
+  
   useEffect(() => {//Load Initial
       (async () => {
         setLoading(true)
-        const blobs = await ImageData.imagesByProjectID(id)
-        //console.log(blobs)
+        localStorage.setItem('project', id )
+        const blobs = await ImageData.loadProjectImages(id)
+        setPop(blobs.length === 0)
         setImages(blobs);
-        setLoading(false)
         setTitle(id)
+        setLoading(false)
       })();
-    setLoaded(true)
      }, [id]);
 
-
 const handleFileInput = async (e) => {
-    const selectedFiles = e.target.files
-    console.log(selectedFiles)
-    if (!selectedFiles || selectedFiles.length === 0) return; // Early return if no files are selected
-    const fileArray = Array.from(selectedFiles);
-    const addBlobs = await classMap.get('ImageData').addImages(fileArray)
-    addOrUpdateImages(addBlobs)
-  };
+  const selectedFiles = e.target.files
+  console.log(selectedFiles)
+  if (!selectedFiles || selectedFiles.length === 0) return; // Early return if no files are selected
+  const fileArray = Array.from(selectedFiles);
+  const addBlobs = await ImageData.addImages(fileArray)
+  addOrUpdateImages(addBlobs);
+  setScrollDownTrigger(!scrollDownTrigger);
+};
 
 const addOrUpdateImages = (blobs) => {
   setImages((prevImages) => {
@@ -58,20 +56,13 @@ const addOrUpdateImages = (blobs) => {
   });
 };
 
-
-//Image Handler for Upload
-//Trigger - Footer
-//output Images
-
-  const closeElement = () => navigate('/');
-
-  const contentContainerRef = useRef<HTMLDivElement>(null)
-
   return (
     <>
-    <OpacityHeader isAtTop={isAtTop} title={title} closeElement={closeElement}/>
+    <MainHeader isAtTop={isAtTop} title={title}/>
+    {loading && ( <Loader /> )}
+      <>
       <div className="app-container-result result-page">
-      <main ref={scrollRef} className={`content image-result ${loaded ? 'fade-in' : ''}`}>
+      <main ref={scrollRef} className={`content image-result ${!loading ? 'fade-in' : ''}`}>
           <div className='image-project-view'>
           {<ImageLoop
           ref={contentContainerRef}
@@ -79,11 +70,13 @@ const addOrUpdateImages = (blobs) => {
           incompleteItems={incompleteItems}
           itemsToSync={itemsToSync}/> }
           </div>
-        {<ImageFooter edit={edit} project={title} handleFileInput={handleFileInput}/> }
       </main>
+        {<ImageFooter edit={edit} project={title} handleFileInput={handleFileInput} pop={pop}/> }
       </div>
+      </>
+
     </>
   );
 };
 
-export default ProjectResult;
+export default ProjectView;

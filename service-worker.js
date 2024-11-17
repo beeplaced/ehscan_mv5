@@ -1,4 +1,4 @@
-const CACHE_NAME = 'my-app-cache-v1.26'; // Update version when there are changes
+const CACHE_NAME = 'my-app-cache-v1.06'; // Update version when there are changes
 const ASSETS_TO_CACHE = [
     '/',
     '/index.html'
@@ -6,12 +6,10 @@ const ASSETS_TO_CACHE = [
 
 const cacheFiles = [
     '.css',
-    'sharedMap.js',
     'IDB.js',
     'API.js',
     'client',
     'TokenLibrary.tsx',
-    'Images.tsx',
     'default.tsx',
     'images.js'
 ];

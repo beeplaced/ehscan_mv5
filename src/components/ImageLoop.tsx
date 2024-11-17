@@ -2,8 +2,8 @@ import React, { useRef, useEffect, useState, forwardRef  } from 'react';
 import { SVG } from '../svg/default'; const svgInst = new SVG();
 import ProjectRoute from '../components/ProjectRoute';
 import { useNavigate } from 'react-router-dom';
-// const ImageLoop: React.FC = ({ images, incompleteItems, itemsToSync, projectFlow = false, edit = false }) => {
-    
+import TokenLibrary from '../text/TokenLibrary'; const textToken = new TokenLibrary();
+
 const ImageLoop = forwardRef(({ images, incompleteItems, itemsToSync, projectFlow = false, edit = false }, ref) => {
   const navigate = useNavigate();
 
@@ -26,7 +26,6 @@ const ImageLoop = forwardRef(({ images, incompleteItems, itemsToSync, projectFlo
   const imgClick = (imageID) => {
     navigate(`/result/${imageID}`); 
   }  
-
 
   useEffect(() => {//Click Stuff
 
@@ -57,59 +56,75 @@ const ImageLoop = forwardRef(({ images, incompleteItems, itemsToSync, projectFlo
 //Sort Images
 
 
+  const imageInfo = () => {
+
+    return (
+      <>
+      <div className="image-info">
+        {images.length > 10 && `${images.length} ${textToken.getToken('fotos')}`}
+        </div>
+        </>
+    )
+  }
+
 
 
 let lastProject = ''
 
-const innerLoop = () => {
-  return (
-    <>
-      <div ref={ref} className="image-content-grid">
-      {images.map(({ imgBlob, id, project, placeholder = false }) => {
-        const isNewProject = project !== lastProject;
-        lastProject = project;
-        return (
-          <React.Fragment key={id}>
-            {isNewProject && projectFlow && (
-              <div className="project-row" data-project={project}>
-                <ProjectRoute project={project} />
-              </div>
-            )}
-            <div className={`igc ${placeholder ? 'img-ph' : ''}`}
-              onClick={() => imgClick(id)}
-              data-index={id}
-              data-image-index={id}
-              data-title={project || undefined}>
-              {!placeholder && (
-                <img
-                  loading="lazy"
-                  className={incompleteItems.includes(id) ? 'imgD missing' : 'imgD'}
-                  src={imgBlob}
-                  alt="image"
-                />
-              )}
-              {selectedItems.includes(id) && (
-                <div className="image-selected" dangerouslySetInnerHTML={{ __html: svgInst.image_selected() }} />
-              )}
-              {itemsToSync.includes(id) && (
-                <div className="lds-ripple">
-                  <div></div>
-                  <div></div>
+  const innerLoop = () => {
+    return (
+      <>
+        <div ref={ref} className="image-content-grid">
+        {images.map(({ imgBlob, id, project, score, clr, placeholder = false }) => {
+          const isNewProject = project !== lastProject;
+          lastProject = project;
+          return (
+            <React.Fragment key={id}>
+              {isNewProject && projectFlow && (
+                <div className="project-row" data-project={project}>
+                  <ProjectRoute project={project} />
                 </div>
               )}
-              <div className="img-result-dongle"></div>
-            </div>
-          </React.Fragment>
-        );
-      })}
-      </div>
-    </>
-  );
-};
+              <div className={`igc ${placeholder ? 'img-ph' : ''}`}
+                onClick={() => imgClick(id)}
+                data-index={id}
+                data-image-index={id}
+                data-title={project || undefined}>
+                {!placeholder && (
+                  <img
+                    loading="lazy"
+                    className={incompleteItems.includes(id) ? 'imgD missing' : 'imgD'}
+                    src={imgBlob}
+                    alt="image"
+                  />
+                )}
+                {selectedItems.includes(id) && (
+                  <div className="image-selected" dangerouslySetInnerHTML={{ __html: svgInst.image_selected() }} />
+                )}
+                {itemsToSync.includes(id) && (
+                  <div className="lds-ripple">
+                    <div></div>
+                    <div></div>
+                  </div>
+                )}
+              {clr && clr !== '' && (
+                <div className="img-result-dongle" style={{ backgroundColor: clr }}></div>
+              )}
+              </div>
+            </React.Fragment>
+          );
+        })}
+          {imageInfo()}
+        </div>
+
+
+      </>
+    );
+  };
 
 return (
   <>
-  { images.length === 0 ? ( <div>Nothing here yet, upload Image</div> ) : ( innerLoop() ) }
+  { images.length === 0 ? ( <div className='no-results'>Nothing here yet, upload Image</div> ) : ( innerLoop() ) }
   </>
   );
 });

@@ -364,7 +364,7 @@ const VDELevels = [
 ];
 
 const statusBarRA = ({ sum, colors }) => {
-// console.log({ sum, colors })
+ console.log({ sum, colors })
     let gradient = ''
     const clrArr = Object.keys(colors)
     let sumPerc = 0

@@ -1,18 +1,22 @@
 import React, { useState, useRef } from 'react';
 import { SVG } from '../svg/default'; const svgInst = new SVG();
-
-import FloatingActionButtons from './FloatingActionButtons';
+import { useNavigate } from 'react-router-dom';
+import FloatingActionButtons from '../elements/FloatingActionButtons';
 import OverlayProjects from './OverlayProjects';
 
-const ImageFooter: React.FC = ({ edit, project, handleFileInput }) => {
+const ImageFooter: React.FC = ({ edit, project, handleFileInput, pop }) => {
   const fileInputRef = useRef(null);
   const [isFabOpen, setIsFabOpen] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
+  const navigate = useNavigate();
 
     const footerClick = (type) => {//footer Button - new Project
     console.log(type)
-    switch (type) {
 
+    switch (type) {
+      case 'menu':
+        navigate(`/menu/`);  
+        break;
       case 'plus':
         setIsFabOpen(isFabOpen ? false : true)
         break;
@@ -38,14 +42,14 @@ const ImageFooter: React.FC = ({ edit, project, handleFileInput }) => {
       </div>) : (
         <div className="image-footer">
           <div className='f-side'>
-          <div onClick={() => footerClick('menu')} dangerouslySetInnerHTML={{ __html: svgInst.footer_menu() }}/>
+          <div onClick={() => footerClick('menu')} dangerouslySetInnerHTML={{ __html: svgInst.footer_settings() }}/>
           </div>
             <div className='f-inside'>
               <div className='footer-middle-back' dangerouslySetInnerHTML={{ __html: svgInst.bckGr() }}/>
-              <div className='footer-middle-ball' onClick={() => footerClick('imgButton')} dangerouslySetInnerHTML={{ __html: svgInst.bckGrBall() }}/>
+              <div className='footer-middle-ball' onClick={() => footerClick('imgButton')} dangerouslySetInnerHTML={{ __html: svgInst.bckGrBall(pop) }}/>
             </div>
           <div className='f-side'>
-          <div onClick={() => footerClick('plus')} dangerouslySetInnerHTML={{ __html: svgInst.footer_plus() }}/>
+          <div onClick={() => footerClick('plus')} dangerouslySetInnerHTML={{ __html: svgInst.footer_menu(isFabOpen) }}/>
           </div>
         </div>
         )}
