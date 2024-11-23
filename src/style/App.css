@@ -3,6 +3,7 @@
     --attention-clr-2: #86aafc;
     --attention-clr-3: #8f8f8f;
     --attention-clr-4: #455566;
+    --attention-clr-5: #616ec6;  
     --c-carbon-0: #eef1f3;
     --c-carbon-10: #d7dde2;
     --c-carbon-20: #b4bcc6;
@@ -37,30 +38,36 @@
     --pr-do-border-radius: 50px;
     --pr-do-width: fit-content;
     --pad-edit-btn-clr: #6C757D;
-    --overlay-dialog-top: 0;
+    --overlay-dialog-top: -30px;
     --img-grid-gap: 1px;
     --img-br-radius: 3px;
-    --input-padding: 20px;
-    --lable-text-align: left;
     --btn-padding:16px 32px;
     --btn-bck-clr: #455566;
     --btn-clr: #fff;
     --btn-border-radius: 12px;
     --ripple-effect-bck: rgba(255, 255, 255, 0.6);
     --img-max-height: max-content;
-    --image-repeats: 6;
+    --image-repeats: 4;
     --ripple-box-shadow: none;
     --primary_clr: #98a2ad;
     --secondary_clr: lightgrey;
+    --lable-top: -15px;
+    --label-weight: 300;
+    --label-size: 90%;
+    --lable-color: var(--main-blue);
+    --lable-left: -5px;
+    --input-padding: 10px;
+    --input-clr: var(--text-clr);
+    --input-margin: 30px 0;
+    --input-align: left;
     }
 
-    /* Styles for mobile web */
+/* Styles for mobile web */
 @media (min-width: 768px) {
   body {
 --img-max-height: 400px;
   --image-repeats: 10;
   }
-
 }
 
 .svg-main-clr{
@@ -83,7 +90,7 @@
 }
 
 ul{
-  margin: 0 0 0 20px;
+    margin: 0 0 0 18px;
 }
 
 .footer-menu {
@@ -101,7 +108,7 @@ fill:  var(--attention-clr-4)
 
 .footer-menu.open{
   --f-path-fill:  var(--footer-bck-clr);
-  --f-cirlce-fill:  var(--attention-clr-4)
+  --f-cirlce-fill: var(--attention-clr-5);
 }
 
 .footer-menu > path {
@@ -132,7 +139,13 @@ display:none;
 }
 
 input[type="text"], textarea {
-color: darkorchid
+color: var(--input-clr);
+text-align: var(--input-align);
+}
+
+textarea{
+  resize: none;
+  overflow: hidden;
 }
 
 html, body {
@@ -253,7 +266,7 @@ body{
 
 .header.opacity {
   --header-op-grid-template-columns: auto 1fr auto;
-  --header-op-padding: 0 15px 0 10px;
+  --header-op-padding: 0 20px 0 10px;
   --header-title-justify: left;
   height: var(--header-height);
   transition: height 0.25s ease;
@@ -268,19 +281,20 @@ body{
   box-shadow: rgba(27, 31, 35, 0.04) 0px 1px 0px, rgba(255, 255, 255, 0.25) 0px 1px 0px inset;
   padding: var(--header-op-padding);
   --header-font-size: 18px;
-  --header-font-weight: bold;
+  --header-font-weight: 300;
 }
 
 .header.opacity.main{
-    --header-op-grid-template-columns: auto 1fr;
+    --header-op-grid-template-columns: auto 1fr auto;
 }
 
 .header.opacity.assessment{
-    --header-op-grid-template-columns: 35px 1fr auto;
+    --header-op-grid-template-columns: 25px 1fr auto;
 }
 
 .header.opacity.result{
-    --header-op-grid-template-columns: 35px auto 1fr;
+    --header-op-grid-template-columns: auto 1fr 25px 25px;
+    --header-op-padding: 0 15px;
 }
 
 .header.opacity.result.shrink, .header.opacity.main.shrink {
@@ -309,7 +323,7 @@ header.opacity.shrink {
   font-size: var(--header-font-size);
   font-weight: var(--header-font-weight);
   justify-content: var(--header-title-justify);
-  margin: .01em 10px 0 10px;
+  margin: 3px 10px 0 10px;
   color: var(--attention-clr-4);
 }
 
@@ -449,16 +463,23 @@ header.opacity.shrink {
   background-color: white;
   color: #333;
   padding: 20px;
-  --project-border-radius: 50px;
-  --input-bck-clr: #dfe7ff;
-  --input-padding: 20px;
+  --project-border-radius: 5px;
+  --input-bck-clr: #CCE5FF;
+  --input-padding: 10px;
   --lable-text-align: center;
+  --lable-top: -20px;
+  --label-weight: 500;
+  --label-size: 110%;
+  --lable-color: #0051A8;
+  --input-clr: darkblue;
+  --input-margin: 50px 0;
+  --input-align: center;
 }
 
 .start-page-text {
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: bold;
-  margin-bottom: 1rem;
+  margin-bottom: .5rem;
 }
 
 .start-page-steps {
@@ -467,7 +488,8 @@ header.opacity.shrink {
   margin-bottom: 2rem;
 }
 .text-blocks{
-  margin: 10px 20px;
+  margin: 10px 5px;
+  width: 100%;
 }
 
 .text-block-li{
@@ -523,18 +545,27 @@ header.opacity.shrink {
 /* ripple-button-variations */
 
 .start-page-button {
-    --btn-padding: 15px 25px;
-    --btn-bck-clr: #8080FF;
+    --btn-padding: 8px 25px;
+    --btn-bck-clr: #1083FE;
     --btn-clr: white;
-    --btn-border-radius: 50px;
+    --btn-border-radius: 5px;
     border-radius: var(--btn-border-radius);
-    margin: 10px;
+    width: 100%;
+    font-weight: 500;
+        margin: 80px 0;
+}
+
+.slogan{
+      font-size: small;
+    font-weight: 600;
+    color: #43586D;
+    margin: 0 60px 30px 60px;
 }
 
   .btn-row.create{
-    grid-template-columns: 50px 1fr 50px;
-    margin: 0;
-    grid-gap: 5px;
+display: flex;
+margin: 0;
+
   }
 
   .btn-row-single{
@@ -551,12 +582,13 @@ margin: 20px;
 }
 
 .small-btn{
-    --btn-padding: 7px 20px 10px 20px;
-    --btn-bck-clr: var(--attention-clr-2);
+    --btn-padding: 8px 20px 9px 20px;
+    --btn-bck-clr: #1083FE;
     --btn-clr: white ;
     --btn-border-radius: 50px;
     border-radius: var(--btn-border-radius);
     width: fit-content;
+    font-weight: 400;
 }
 
 .footer-btn{
@@ -574,8 +606,47 @@ margin: 20px;
     --btn-padding: 8px 20px 9px 20px;
     margin: 5px 0;
     --btn-border-radius: 50px;
-    --ripple-box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    --ripple-box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+    min-width: 150px;
 }
+
+
+
+.lds-circle,
+.lds-circle div {
+  box-sizing: border-box;
+}
+.lds-circle {
+  transform: translateZ(1px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+margin: 0 10px 0 0;
+}
+.lds-circle > div {
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  animation: lds-circle 3s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+@keyframes lds-circle {
+  0%, 100% {
+    animation-timing-function: cubic-bezier(0.5, 0, 1, 0.5);
+  }
+  0% {
+    transform: rotateY(0deg);
+  }
+  50% {
+    transform: rotateY(1800deg);
+    animation-timing-function: cubic-bezier(0, 0.5, 0.5, 1);
+  }
+  100% {
+    transform: rotateY(3600deg);
+  }
+}
+
+
 
 .svg-btn {
   --ripple-effect-bck: rgba(0, 0, 0, 0.15); /* Darker ripple effect */

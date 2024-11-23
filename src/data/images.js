@@ -19,7 +19,7 @@ export class ImageRenderer {
         this.searchProject = localStorage.getItem('searchProject') || ''
     }
 
-    loadProjectImagesxxx = async (project) => {
+    loadProjectImagess = async (project) => {
         let startTime = performance.now();
         const output = await _storage.getData({ value: project, field: 'project' });
         const res = await this.createValidImageObjects(output.data)
@@ -32,9 +32,10 @@ export class ImageRenderer {
         this.project = project
         //load project from DB
         const allAPI = await api.getProjectImageInfo(project)
-        // console.log('get Images from DB', allAPI)
+        console.log('get Images from DB', allAPI)
         //sha, project, score, clr
         const { data } = await _storage.getData({ value: project, field: 'project' });
+        console.log(data)
         let allDB = data //await _storage.getAllData(); //console.log('get Images from DB', allDB)
         await this.checkImagesinDBwithAPI({ allDB, allAPI })//check all Data from DB
         const allDBShas = allDB.map(db => db.sha);
@@ -60,10 +61,8 @@ export class ImageRenderer {
             .sort((a, b) => a.id - b.id)
             .map(({ blob, id, project, score, clr }) => {
                 const url = URL.createObjectURL(blob);
-
                 return new Promise((resolve) => {
                     const img = new Image();
-
                     img.onload = () => {
                         resolve({
                             imgBlob: url,
@@ -73,7 +72,6 @@ export class ImageRenderer {
                             ...(clr !== undefined && { clr }),
                         });
                     };
-
                     img.onerror = () => {
                         delItems.push(id)
                         console.warn(`Blob with ID ${id} is invalid.`);
@@ -346,7 +344,6 @@ export class ImageRenderer {
                 console.log(`blob`, blob)
                 const { sha } = await api.sendImageGateway(preparedFile);
                 console.log("sha", sha)
-
                 await this.storeImageDB({ sha, blob, project: this.project }); 
                 const { data } = await _storage.getData({ value: sha });
                 const { id, project } = data[0];
@@ -521,6 +518,12 @@ export class ImageRenderer {
         }
         if (status !== 200) return
         return this.returnImgFDromDB(data)
+    };
+
+    findNextAndPrevIds = async (id) => {
+        const value = parseInt(id)
+        const res = await _storage.findNextAndPrevIds(value)
+        return res
     };
 
     imgBySha = async (sha) => {

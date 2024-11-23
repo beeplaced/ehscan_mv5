@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
-import TokenLibrary from '../text/TokenLibrary'; const textToken = new TokenLibrary();
-import { SVG } from '../svg/default'; const svgInst = new SVG();
+
+import classMap from '../sharedMap';
+const svgInst = classMap.get('svgInst');
+
 import { useNavigate } from 'react-router-dom';
 import useRipple from '../tools/useRipple';  // Import the custom hook
 import StatusBar from './StatusBar';  // Import the custom hook

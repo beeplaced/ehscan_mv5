@@ -14,25 +14,38 @@ const DialogProject: React.FC<OverlayDialogProps> = ({ entryValue, setNewProject
   const [existingProject, setExistingProject] = useState(false);
   const [btnTitle, setBtnTitle] = useState(textToken.getToken('saveProject'));
   const [inputValue, setInputValue] = useState(entryValue);
-  const [flicker, setFlicker] = useState(false)
 
   useEffect(() => {
     setInputValue(entryValue);
-    console.log("Input value updated:", entryValue); // Log the new value
     setExistingProject(entryValue.title !== '')
   }, [entryValue]); // Run this effect whenever entryValue changes
   
-  // New Project
   const setValue = (entry: Partial<typeof inputValue>) => {
     const newValue = {
       ...inputValue,
       ...entry
     };
-    console.log(newValue);
     setInputValue(newValue);
   };
 
+  const createProject = async () => {
+      if (inputValue.title === '') {
+      alert('add Title')
+      return
+    }
+    const res = await api.setProject(inputValue)
+    
+    if (![200, 201].includes(res.status)) {
+      alert('Something went wrong, try again');
+      return;
+    }
+    const { title } = inputValue
+    setNewProject(title)
+    setDialogClose(true)
+  }
+
   const saveProject = async () => {
+    return
     console.log(inputValue)
 
     if (inputValue.title === '') {
@@ -75,40 +88,35 @@ const DialogProject: React.FC<OverlayDialogProps> = ({ entryValue, setNewProject
   }
 
   const handleButtonClick = () => {
-    console.log('s')
+    console.log('handleButtonClick')
   }
 
     const footer = () => {
+    
     return (
       <>
       <div className='dialog-footer'>
-        <div className='btn-row create'>
-      {existingProject && (
+      {existingProject ? (<>
+        <div className='btn-row edit'>
         <div className="svg-btn" onClick={handleButtonClick}>
         <ButtonRipple index="0" text="trash"/>
         </div>
-        )}
         <div className="def-btn" onClick={() => saveProject()}>
         <ButtonRipple index="1" text={textToken.getToken('saveProject')}/>
         </div>
-        {existingProject && (
         <div className="svg-btn" onClick={() => enterNewProject()}>
         <ButtonRipple index="0" text="forward"/>
         </div>
-        )}
-
-
-          {/* <div className={`btn change ${flicker ? '_flicker' : ''}`} onClick={() => saveProject()}>{btnTitle}</div>
-                {existingProject && (
-                  <>
-                  <div className='btn-added'>
-                  <div className='btn trash' dangerouslySetInnerHTML={{ __html: svgInst.trash_can() }}></div>
-                  <div className='btn trash' onClick={() => enterNewProject()}>go</div>
-                  </div>
-                  </>
-                  )} */}
-                </div>
-            </div>
+        </div>
+      </>) : (
+      <>
+      <div className='btn-row create'>
+        <div className="small-btn" onClick={() => createProject()}>
+        <ButtonRipple index="1" text={textToken.getToken('saveProject')}/>
+        </div>
+      </div>    
+      </>)}
+      </div>
       </>
     )
   };
@@ -137,10 +145,6 @@ const DialogProject: React.FC<OverlayDialogProps> = ({ entryValue, setNewProject
         onChange={(value) => setValue({ comment: value })} 
       />
       {footer()}
-      {/* <div className='btn-row'>
-      <div className='btn project' onClick={() => saveProject()}>{btnTitle}</div>
-      {existingProject && (<div className='btn project' onClick={() => deleteProject()}>delete Project</div>)}
-      </div> */}
     </>
   );
 };

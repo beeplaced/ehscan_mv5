@@ -21,7 +21,6 @@ export class API {
             };
             const response = await axios(options);
             const result = response.data.result
-            console.log(result)
             return result;
         } catch (error) {
             console.error('Error sending image:', error);
@@ -42,7 +41,6 @@ export class API {
             };
             const response = await axios(options);
             const result = response.data.result
-            console.log(result)
             return result;
         } catch (error) {
             console.error('Error sending image:', error);
@@ -66,6 +64,40 @@ export class API {
         console.error('Error fetching full message data:', error.message || error);
         return {}; // Return an empty array if there's an error
     }
+    };
+
+    getReport = async ({ project, report }) => {
+        console.log(project, report)
+        const contentType = 'vnd.openxmlformats-officedocument.wordprocessingml.document'
+        try {
+            const options = {
+                url: `${gatewayUrl}/custom-report`,
+                method: 'POST',
+                headers: {
+                    'Content-type': `application/${contentType}`,
+                    project,
+                    report,
+                    tenant,
+                    clientId: localStorage.getItem('clientId')
+                },
+                responseType: 'blob'  // Important to set the response type to 'blob' to handle binary data
+            };
+            const response = await axios(options);
+            const blob = new Blob([response.data], { type: `application/${contentType}` });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.href = url;
+            link.download = `${report}_${project}.docx`;  // Set a default filename for the download
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);  // Free up the object URL
+            return true
+        } catch (error) {
+            //alert(`report Error ${error}`)
+            console.error('Error downloading the report:', error);
+            throw error;
+        }
     };
 
     //0
@@ -100,7 +132,6 @@ export class API {
             }
             const { data } = await axios.post(`${gatewayUrl}/image-upload`, formData, { headers });
             const { sha, saveImage } = data?.result || {};
-            console.log("saveImage",saveImage)
             return { sha };
         } catch (error) {
             //alert(`sendImageGateway ${error}`)
@@ -122,7 +153,6 @@ export class API {
             return { blob, project, store };
             });
             const urls = await Promise.all(imagePromises);
-            console.log(urls)
             return urls
     };
 
@@ -139,7 +169,6 @@ export class API {
                 headers
             };
             const response = await axios(options);
-            console.log(response)
             return response.data.result;
         } catch (error) {
             console.error('Error sending image:', error);
@@ -178,7 +207,6 @@ export class API {
 
         storeData.score = score || 0
         storeData.clr = score ? getHazardRangeColor(score).bck_color : ''
-
         const store = await _storage.storeData(storeData);
         if (store.status === 201) return await _storage.updateData(storeData);
         return store
@@ -261,7 +289,6 @@ export class API {
                 }
             };
             const response = await axios(options);
-            console.log(response)
             const result = response.data.result
             return result
         } catch (error) {
@@ -284,7 +311,6 @@ export class API {
                 headers
             };
             const response = await axios(options);
-            console.log(response)
             const result = response.data.result
             return result
         } catch (error) {
@@ -305,7 +331,6 @@ export class API {
                     tenant
                 }
             });
-            console.log(response)
             return response.data.result
         } catch (error) {
             console.error('Error sending image:', error);

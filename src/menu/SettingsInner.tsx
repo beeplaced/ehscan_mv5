@@ -1,16 +1,21 @@
 import React, { useState, useRef } from 'react';
 import DropDownMenu from '../tools/DropDownMenu';
 import SwitchToggle from '../tools/SwitchToggle';
+import { useParams, useNavigate } from 'react-router-dom';
 const retrievedSettings = localStorage.getItem('settings');
 const settingsObj = JSON.parse(retrievedSettings); // Convert back to object
 console.log(settingsObj)
-import { SVG } from '../svg/default'; const svgInst = new SVG();
+import classMap from '../sharedMap';
+const textToken = classMap.get('textToken');
+const svgInst = classMap.get('svgInst');
+
 import useRipple from '../tools/useRipple';  // Import the custom hook
 
-const Settings: React.FC = () => {
+const SettingsInner: React.FC = () => {
 
 const buttonRef = useRef(null);
 const [settingsObject, setSettingsObject] = useState(settingsObj);
+  const navigate = useNavigate();
 
 const onChange = (newSettings) => {
     console.log("changed", newSettings);
@@ -70,12 +75,12 @@ const onChange = (newSettings) => {
     localStorage.setItem('settings', JSON.stringify(updatedSettings));
 };
 
-
 const handleRipple = useRipple(); // Use the custom hook
 
 const handleButtonClick = (event) => {
     console.log('a')
     handleRipple(event, buttonRef);
+    navigate(`/account/`); 
   };
 
 return (
@@ -137,4 +142,4 @@ return (
   );
 };
 
-export default Settings;
+export default SettingsInner;

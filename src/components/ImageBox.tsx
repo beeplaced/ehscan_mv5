@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 // import { ImageRenderer } from '../data/images'; const ImageData = new ImageRenderer();
 import { SVG } from '../svg/default'; const svgInst = new SVG();
-import classMap from '../tools/sharedMap';
+import classMap from '../sharedMap';
 import { useWebSocket } from '../tools/WebSocketContext';
 import ProjectRoute from '../components/ProjectRoute';
 import ImageInfo from '../components/ImageInfo';
@@ -52,8 +52,6 @@ const ImageBox: React.FC = ({ edit, fileInputRef, setHeaderTop, imgBoxAction, so
   }, [isFirstRender]);
 
   useEffect(() => {
-    console.log(imgBoxAction)
-
     switch (imgBoxAction) {
       case "deleteSelected":
       (async () => {
@@ -68,7 +66,6 @@ const ImageBox: React.FC = ({ edit, fileInputRef, setHeaderTop, imgBoxAction, so
         break;
       case "analyzeSelected":
       (async () => {
-        console.log(selectedItems)
         // await classMap.get('ImageData').removeImages(selectedItems)
         //   setImages((prevImages) => {
         //     const idsToRemove = new Set(selectedItems); // Store ids to remove in a Set for fast lookup
@@ -88,7 +85,6 @@ const ImageBox: React.FC = ({ edit, fileInputRef, setHeaderTop, imgBoxAction, so
 
   useEffect(() => {//CHANGES BY MESSAGE
     if (!message || message.length === 0) return
-    console.log("message",message)
 
     switch (true) {
       case message.missing !== undefined:
@@ -195,7 +191,6 @@ const ImageBox: React.FC = ({ edit, fileInputRef, setHeaderTop, imgBoxAction, so
     if (scrollRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
       const isBottom = Math.abs(scrollHeight - clientHeight - scrollTop) < 1;
-      console.log('Is at bottom:', isBottom); // You can remove this log
       setHeaderTop(scrollTop === 0);
       setOpenInfo(isBottom)
     }

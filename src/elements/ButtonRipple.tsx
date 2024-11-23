@@ -2,7 +2,7 @@ import { useRef } from "react";
 import { SVG } from '../svg/default'; const svgInst = new SVG();
 import useRipple from '../tools/useRipple';  // Import the custom hook
 
-const ButtonRipple = ({ index, text }) => {
+const ButtonRipple = ({ index, text, loader }) => {
   const buttonRef = useRef(null);
   const handleRipple = useRipple();
 
@@ -40,18 +40,25 @@ const ButtonRipple = ({ index, text }) => {
       default:
     return (
       <>
-    <div key={index} ref={buttonRef} className='ripple-container' onClick={handleButtonClick}>{text}</div>
+    <div key={index} ref={buttonRef} className='ripple-container' onClick={handleButtonClick}>
+      {loader && (loaderBtn())}
+      {text}</div>
       </>
     )
     }
-
-
   }
 
+  const loaderBtn = () => {
+    return (
+      <>
+  <div className="lds-circle"><div></div></div>
+   </>
+    )
+  }
 
   return (
     <>
-    {inner()}
+{inner()}
     </>
   );
 };

@@ -15,7 +15,6 @@ interface OverlayDialogProps {
 }
 
 const OverlayDialog: React.FC<OverlayDialogProps> = ({ isOpen, entryValue, sha, onClose }) => {
-
 const [inputValue, setInputValue] = useState(entryValue);
 const [valInputValue, setValInputValue] = useState({});
 const [valuesEqual, setValuesEqual] = useState(true);
@@ -30,16 +29,11 @@ const scrollRef = useRef<HTMLDivElement>(null);
     if (entryValue.comment) valEntry.comment = entryValue.comment.comment
     setValInputValue(valEntry)
     setInputValue(valEntry);
-    console.log(entryValue)
   }, [entryValue]);
 
     useEffect(() => {
-    //console.log("Input value updated:", inputValue, entryValue); // Log the new value
     const equal = deepEqual(inputValue,valInputValue)
-    console.log(equal)
     setValuesEqual(equal)
-
-
   }, [inputValue]);
 
   const deepEqual = (obj1, obj2) => {
@@ -81,8 +75,7 @@ const scrollRef = useRef<HTMLDivElement>(null);
   const count = entryValue.c
   console.log(comment, checked, severity, likelihood, count, sha)
 
-
-    const res = await api.modifyAssessmentEntry({
+  const res = await api.modifyAssessmentEntry({
           count,
           sha,
           task: 'update',
@@ -179,11 +172,9 @@ const scrollRef = useRef<HTMLDivElement>(null);
                 value={inputValue.comment}
                 onChange={(value) => setTextValue(value)}/>
             <SwitchToggle
-            result={{ title: 'solved',
+            result={{ title: 'checked',
             type: 'slider',
-            description: 'Safety Issue Fixed On-Site?',
-            on: "The risky situation has been solved on-site",
-            off: "Further action required",
+            description: 'Safety Issue Fixed On-Site',
             selected: inputValue.checked || false
             }} onChange={setSwitchValue} />
       </div>
@@ -200,7 +191,7 @@ const scrollRef = useRef<HTMLDivElement>(null);
         <div className="svg-btn">
         <ButtonRipple index="0" text="trash"/>
         </div>
-        <div className="def-btn" onClick={() => saveProject()}>
+        <div className="def-btn" onClick={() => saveElement()}>
         <ButtonRipple index="1" text={textToken.getToken('editHazard')}/>
         </div>
           </div>

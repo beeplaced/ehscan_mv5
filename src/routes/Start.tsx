@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import FloatingLabelInput from '../tools/FloatingLabelInput';
 import { API } from '../data/API.js'; const api = new API();
-import TokenLibrary from '../text/TokenLibrary'; const textToken = new TokenLibrary();
-import { SVG } from '../svg/default'; const svgInst = new SVG();
+import classMap from '../sharedMap';
+import TokenLibrary from '../text/TokenLibrary';
+import { SVG } from '../svg/default';
+import { ImageRenderer } from '../data/images';
+classMap.set('textToken', new TokenLibrary()); const textToken = classMap.get('textToken');
+classMap.set('svgInst', new SVG());
+classMap.set('ImageData', new ImageRenderer());
+
 import ButtonRipple from '../elements/ButtonRipple';
 
 import { useNavigate, useLocation } from 'react-router-dom';
 
-const StartPage: React.FC = () => {
+const Start: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
     useEffect(() => {
+
       (async () => {
         console.log(localStorage.getItem('project'))
         const project = localStorage.getItem('project')
@@ -21,8 +28,8 @@ const StartPage: React.FC = () => {
             }
         const { title } = await api.getProject('last');        //if no project, grab from db
         if (title) {
-              navigate(`/${title}`);
-              return;   
+          navigate(`/${title}`);
+          return;   
         }
         //else do not navigate
       })();
@@ -44,9 +51,6 @@ const StartPage: React.FC = () => {
   
     const handleButtonClick = async () => {
 
-      console.log('asd')
-
-      return
     
     const { title } = inputValue
 
@@ -70,13 +74,14 @@ const StartPage: React.FC = () => {
       <h1 className="start-page-text">
         EHSCAN
       </h1>
+
+    <div className='slogan'>{textToken.getToken('slogan')}</div>
+
+
 <div className='text-blocks'>
 <FloatingLabelInput label="Start a new Project" value={inputValue.title} onChange={(value) => setValue({ title: value })} />
 <FloatingLabelInput label="Define the Assessment Context / Focus" value={inputValue.context} onChange={(value) => setValue({ context: value })} />
-       
-<div className='text-block-li'>Upload your images for automated Analysis</div>
-<div className='text-block-li'>Download a report</div>
-        </div>
+</div>
       <div className="start-page-button" onClick={handleButtonClick}>
         <ButtonRipple index="0" text="Let's Go"/>
       </div>
@@ -85,5 +90,5 @@ const StartPage: React.FC = () => {
 
 };
 
-export default StartPage;
+export default Start;
 

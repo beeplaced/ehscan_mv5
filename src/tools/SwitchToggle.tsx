@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { SVG } from '../svg/default'; const svgInst = new SVG();
+
+import classMap from '../sharedMap';
+const svgInst = classMap.get('svgInst');
+
 import RadioButton from '../tools/RadioButton';
 
 const SwitchToggle = ({ result, onChange }) => {
@@ -7,7 +10,7 @@ const SwitchToggle = ({ result, onChange }) => {
     const [selTag, setSelTag] = useState('');
     const [on, setOn] = useState('');
     const [off, setOff] = useState('');
-    const [selection, setSelection] = useState('');
+    const [selection, setSelection] = useState([]);
     const sliderBoxRef = useRef(null);
 
     useEffect(() => {

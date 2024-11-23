@@ -1,12 +1,11 @@
 import React, { useState, useRef } from 'react';
-import TokenLibrary from '../text/TokenLibrary'; const textToken = new TokenLibrary();
-import { SVG } from '../svg/default'; const svgInst = new SVG();
 import { API } from '../data/API.js'; const api = new API();
-import { ImageRenderer } from '../data/images'; const ImageData = new ImageRenderer();
 import { useNavigate } from 'react-router-dom';
 import useRipple from '../tools/useRipple';  // Import the custom hook
-import StatusBar from './StatusBar';  // Import the custom hook
 import { getHazardRangeColor } from '../data/levels.js';
+
+import classMap from '../sharedMap';
+const ImageData = classMap.get('ImageData');
 
 const HazardSegmentDongle: React.FC = ({ entry, project }) => {
 const navigate = useNavigate();

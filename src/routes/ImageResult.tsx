@@ -1,23 +1,24 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Swiper, SwiperSlide } from 'swiper/react';
 import OverlayDialog from '../dialogs/OverlayDialog';
 import ReEvaluateContext from '../dialogs/ReEvaluateContext';
 import ResultHeader from '../elements/ResultHeader';
-import { ImageRenderer } from '../data/images'; const ImageData = new ImageRenderer();
 import { ResultRenderer } from '../data/resultRenderer'; const ResultData = new ResultRenderer();
-import { SVG } from '../svg/default'; const svgInst = new SVG();
 import ResultInfo from '../components/ResultInfo';
 import useScrollListener from '../tools/useScrollListener';
-import TokenLibrary from '../text/TokenLibrary'; const textToken = new TokenLibrary();
 import ButtonRipple from '../elements/ButtonRipple';
 import Popup from '../dialogs/Popup';
 
+import classMap from '../sharedMap';
+const textToken = classMap.get('textToken');
+const svgInst = classMap.get('svgInst');
+const ImageData = classMap.get('ImageData');
 
 const ImageResult: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Access the id parameter
-  const swiperRef = useRef<HTMLDivElement>(null);
   const [popUpType, setPopUpType] = useState('');
+  const [nextID, setNextID] = useState(undefined);
+  const [prevID, setPrevID] = useState(undefined);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const closePopup = () => setIsPopupOpen(false);
   const [showDialog, setShowDialog] = useState(false);
@@ -33,7 +34,6 @@ const ImageResult: React.FC = () => {
   const [loaded, setLoaded] = useState(false);
   const [outputResults, setOutputResults] = useState([]);
   const [baseData, setBaseData] = useState([]);
-  const contentRef = useRef(null);
   const [inputValue, setInputValue] = useState({});
   const [inputSha, setInputSha] = useState('');
   const [rerender, setRerender] = useState(false);
@@ -41,31 +41,10 @@ const ImageResult: React.FC = () => {
   const [description, setDescription] = useState('');
   const { scrollRef, isAtTop } = useScrollListener({ scrollDown: false });
   const [outputHazards, setOutputHazards] = useState([]);
-  
-  const handleSlideChange = (swiper) => {
-    if (!id) return;
+  //need next id available
+  //      navigate(`/result/${exit}`);
 
-    const currentId = parseInt(id);
-    let exit = currentId;
-
-    if (swiper.activeIndex === 0 && currentId > 0) {
-      exit = currentId - 1;
-    } else if (swiper.activeIndex === 2) {
-      exit = currentId + 1;
-    }
-
-    if (exit !== currentId) {
-      navigate(`/result/${exit}`);
-    }
-  };
-
-    useEffect(() => {
-        console.log(isAtTop)
-  }, [isAtTop]);
-
-    useEffect(() => {
-
-      console.log(dialogChanged)
+    useEffect(() => { //reload on change / save / edit
 
       if (dialogChanged){
         const reloadData = async () => {
@@ -85,15 +64,14 @@ const ImageResult: React.FC = () => {
       }
   }, [dialogChanged]);
 
-
   useEffect(() => { // init
     const loadData = async () => {
       setLoaded(false)
       //load Image Data
+      //Check if id exists, cause of pagination
       const res = await ImageData.imgByID(id)
       if (res.status === 204) return
       setElements(true)
-      console.log(res)
       const{ imgBlob, sha, project } = res
       setImage({ imgBlob, sha })
       setInputSha(sha)
@@ -101,25 +79,24 @@ const ImageResult: React.FC = () => {
 
       //Grab Results
       const data = await ImageData.getImageResults(sha)
-      console.log(data)
       const { Title, results } = data
-        if(results && results.length > 0){
-        const { hazards, result } = await ResultData.renderResult({results})
-        console.log( hazards, result )
-        if (Title) setTitle(Title)
-        setOutputHazards(hazards)
-        const { context, description } = result
-        if (context) setContext(context)
-        if (description) setDescription(description)
-        setReEvaluate(true)
-        }
+      if(results && results.length > 0){
+      const { hazards, result } = await ResultData.renderResult({results})
+      setTitle(Title || 'Image')
+      setOutputHazards(hazards)
+      const { context, description } = result
+      if (context) setContext(context)
+      if (description) setDescription(description)
+      setReEvaluate(true)
+      const { prevId, nextId } = await ImageData.findNextAndPrevIds(id)//Grab prev and next
+      setNextID(nextId)
+      setPrevID(prevId)
+      }
+        //get setNextID
       setLoaded(true)
     }
+    loadData()
 
-    if (swiperRef.current) {
-      loadData()
-      swiperRef.current.slideTo(1, 0); // Instantly reset to index 1
-    }
   }, [id]);
 
   const btnClick = (resultIndex) => {
@@ -132,8 +109,6 @@ const ImageResult: React.FC = () => {
   const btnRevalClick = () => {
         setTimeout(() => { setShowReval(true) }, 200);
   }
-
-  const closeElement = () => navigate(`/${project}`);  
 
   const noResults = () => {
     return (<>
@@ -185,9 +160,7 @@ const ImageResult: React.FC = () => {
                 {safeguards && (
                   <div className='result-loop-safeguard-row'>
                     <ul>
-                      {safeguards.split('.').map((safeguard, index) => 
-                        safeguard.trim() && <li key={index}>{safeguard.trim()}</li>
-                      )}
+                      {ulStyle(safeguards)}
                     </ul>
                   </div>
                 )}
@@ -195,25 +168,42 @@ const ImageResult: React.FC = () => {
                 {commentElement(comment)}
                 </div>
                 {subText && (<div className='result-loop-sub-text'>{subText}</div>)}
-                {compliance && (<div className='result-loop-sub-text'>{compliance}</div>)}
+                {compliance && compliance.length > 0 && (<div className='result-loop-sub-text'>
+                <ul>{compliance.map((c, index) => c.trim() && <li key={index}>{c.trim()}</li>)}</ul>
+                </div>)}
+      </>
+    )
+  }
+
+  const ulStyle = (text) => {
+      return text.split('.').map((t, index) => 
+        t.trim() && <li key={index}>{t.trim()}</li>
+    )
+  }
+
+  const mainTitle = () => {
+    return (
+      <>
+                                <div className='result-loop-main-title'>
+                            <div dangerouslySetInnerHTML={{ __html: svgInst.segments('ra') }}></div>
+                            {textToken.getToken('riskAssessment')}</div>
       </>
     )
   }
 
   const mainElement = () => {
     return (<>
-        <SwiperSlide key={1}>
                 {elements ? (
                   <>
                     {/* {<ProjectRoute project={project}/>} */}
                     <div className='image-result-wrapper'>
                       <div className='image-result-box'>
+                        {mainTitle()}
                         <div className='image-result-box-image'>
                           {image && (
                             <img src={image.imgBlob} alt="image" data-sha={image.sha} />
                           )}
                         </div>
-                          <div className='result-loop-main-title'>{textToken.getToken('riskAssessment')}</div>
                           {outputHazards && outputHazards.length > 0 ? (
                             outputHazards.map((result, resultIndex) => (
                               <React.Fragment key={resultIndex}>
@@ -225,48 +215,24 @@ const ImageResult: React.FC = () => {
                               {noResults()}
                             </>
                           )}
-
                           {context && (
                               <>
-                              <div className='result-loop-main-title'>{textToken.getToken('context')}</div>
-                               <div className='result-loop-sub-wrapper'>
-                              {context}
-                              </div>
+                              <div className='result-loop-sub-title'>{textToken.getToken('context')}</div>
+                               <div className='result-loop-sub-wrapper'>{context}</div>
                               </>
                           )}
                           {description && (
                               <>
-                              <div className='result-loop-main-title'>{textToken.getToken('description')}</div>
-                               <div className='result-loop-sub-wrapper'>
-                              {description}
-                              </div>
+                              <div className='result-loop-sub-title'>{textToken.getToken('description')}</div>
+                               <div className='result-loop-sub-wrapper'>{description}</div>
                               </>
                           )}
-
-                        {/* <div className='results-segments'>
-                          {outputResults && outputResults.length > 0 ? (
-                            outputResults.map((result, resultIndex) => (
-                              <div 
-                                className={`${rerender ? 'fade-out' : 'fade-in'}`}
-                                ref={contentRef} 
-                                key={resultIndex} 
-                                dangerouslySetInnerHTML={{ __html: result }}
-                                onClick={ () => btnClick(resultIndex) }
-                              />
-                            ))
-                          ) : (
-                            <>
-                            {noResults()}
-                            </>
-                          )}
-                        </div> */}
                       </div>
                     </div>
                   </>
                 ) : (
                   <ResultInfo/>
                 )}
-              </SwiperSlide>
     </>)
   }
 
@@ -313,24 +279,18 @@ const ImageResult: React.FC = () => {
     )
   }
 
+  const closeElement = () => navigate(`/${project}`);  
+
   return (
     <>
-    <ResultHeader isAtTop={isAtTop} title={title} closeElement={closeElement}/>
+    <ResultHeader isAtTop={isAtTop} title={title}
+    closeElement={closeElement}
+    nextElement={nextID}
+    prevElement={prevID}    
+    />
       <div className="app-container-result result-page">
       <main ref={scrollRef} className={`content image-result ${loaded ? 'fade-in' : ''}`}>
-          <Swiper 
-            key={id}
-            onSwiper={(swiper) => (swiperRef.current = swiper)}
-            spaceBetween={50} 
-            slidesPerView={1}
-            initialSlide={1}
-            effect='flip'
-            onSlideChange={handleSlideChange}
-            >
-            <SwiperSlide key={0}/>
-            {mainElement()}
-            <SwiperSlide key={2}></SwiperSlide>
-          </Swiper>
+        {mainElement()}
         </main>
         {dialogs()}
       <footer className="footer">{tasks()}</footer>

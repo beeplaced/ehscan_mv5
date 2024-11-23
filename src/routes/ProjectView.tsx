@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ImageRenderer } from '../data/images'; const ImageData = new ImageRenderer();
+import classMap from '../sharedMap';
+const ImageData = classMap.get('ImageData');
+
 import useScrollListener from '../tools/useScrollListener';
 import MainHeader from '../elements/MainHeader';
 import ImageFooter from '../components/ImageFooter';
@@ -10,7 +12,7 @@ import Loader from '../tools/Loader';
 //const ProjectView: React.FC = () => {
   const ProjectView = () => {
   const { id } = useParams<{ id: string }>(); // Access the id parameter
-  const contentContainerRef = useRef<HTMLDivElement>(null)
+  const contentContainerRef = useRef<HTMLDivElement>(null);
   const [title, setTitle] = useState('');
   const [scrollDownTrigger, setScrollDownTrigger] = useState(false);
   const { scrollRef, isAtTop } = useScrollListener({ scrollDown: true, scrollDownTrigger });
@@ -18,9 +20,6 @@ import Loader from '../tools/Loader';
   const [pop, setPop] = useState(false);
   const [edit, setEdit] = useState(false);
   const [images, setImages] = useState([]);
-  const [itemsToSync, setItemsToSync] = useState([]);
-  const [selectedItems, setSelectedItems] = useState([]);
-  const [incompleteItems, setIncompleteItems] = useState([]);
   
   useEffect(() => {//Load Initial
       (async () => {
@@ -32,33 +31,36 @@ import Loader from '../tools/Loader';
         setTitle(id)
         setLoading(false)
       })();
-     }, [id]);
+  }, [id]);
 
-const handleFileInput = async (e) => {
-  const selectedFiles = e.target.files
-  console.log(selectedFiles)
-  if (!selectedFiles || selectedFiles.length === 0) return; // Early return if no files are selected
-  const fileArray = Array.from(selectedFiles);
-  const addBlobs = await ImageData.addImages(fileArray)
-  addOrUpdateImages(addBlobs);
-  setScrollDownTrigger(!scrollDownTrigger);
-};
+  const handleFileInput = async (e) => {
+    const selectedFiles = e.target.files
+    console.log(selectedFiles)
+    if (!selectedFiles || selectedFiles.length === 0) return; // Early return if no files are selected
+    const fileArray = Array.from(selectedFiles);
+    const addBlobs = await ImageData.addImages(fileArray)
+    addOrUpdateImages(addBlobs);
+    setScrollDownTrigger(!scrollDownTrigger);
+  };
 
-const addOrUpdateImages = (blobs) => {
-  setImages((prevImages) => {
-    // Loop through each new image and check if its id already exists in prevImages
-    const updatedImages = prevImages.filter((existingImage) => {
-      // Keep the existing image only if its id is not in the new blobs
-      return !blobs.some((newImage) => newImage.id === existingImage.id);
+  const addOrUpdateImages = (blobs) => {
+    setImages((prevImages) => {
+      const updatedImages = prevImages.filter((existingImage) => {
+        return !blobs.some((newImage) => newImage.id === existingImage.id);
+      });
+      return [...updatedImages, ...blobs];
     });
-    // Append the new images to the end of the updated array
-    return [...updatedImages, ...blobs];
-  });
-};
+  };
+
+  const [showDialog, setShowDialog] = useState(false);
 
   return (
     <>
-    <MainHeader isAtTop={isAtTop} title={title}/>
+    <MainHeader 
+    isAtTop={isAtTop} 
+    title={title}
+    setShowDialog={setShowDialog}  
+    />
     {loading && ( <Loader /> )}
       <>
       <div className="app-container-result result-page">
@@ -66,12 +68,17 @@ const addOrUpdateImages = (blobs) => {
           <div className='image-project-view'>
           {<ImageLoop
           ref={contentContainerRef}
-          images={images}
-          incompleteItems={incompleteItems}
-          itemsToSync={itemsToSync}/> }
+          images={images}/> }
           </div>
       </main>
-        {<ImageFooter edit={edit} project={title} handleFileInput={handleFileInput} pop={pop}/> }
+        {<ImageFooter 
+        edit={edit} 
+        project={title} 
+        handleFileInput={handleFileInput} 
+        pop={pop}
+        showDialog={showDialog}
+        setShowDialog={setShowDialog}       
+        /> }
       </div>
       </>
 

@@ -11,9 +11,8 @@ const UserMenu: React.FC = () => {
       user: 'Eric EHS Expert',
       initial: 'EE',
       email: 'eric@ehscan.com'
-    };;
+    };
   });
-
 
   return (
     <>

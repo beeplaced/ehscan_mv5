@@ -240,7 +240,6 @@ export class IndexedDB {
             let request;
 
             if (field === 'id') {
-                console.log(value)
                 request = store.get(value);
             } else {
                 // Otherwise, use the specified index
@@ -262,13 +261,55 @@ export class IndexedDB {
         });
     }
 
-    getAllDataSort = async (sortField = null, sortDirection = 'next') => {
-        // next: The cursor shows all records, including duplicates, in ascending order.
-        // nextunique: The cursor shows only unique records in ascending order.
-        // prev: The cursor shows all records, including duplicates, in descending order.
-        // prevunique: The cursor shows only unique records in descending order.
+    findNextAndPrevIds = async (targetId) => {
+        const db = await this.dbPromise;
 
-            const db = await this.dbPromise;
+        return new Promise((resolve, reject) => {
+            const transaction = db.transaction(this.storeName, 'readonly');
+            const store = transaction.objectStore(this.storeName);
+
+            let prevId = null;
+            let nextId = null;
+            let foundTarget = false;
+
+            const request = store.openCursor();
+
+            request.onsuccess = (event) => {
+                const cursor = event.target.result;
+
+                if (cursor) {
+                    const currentId = cursor.key;
+
+                    if (foundTarget) {
+                        nextId = currentId; // Found the next ID
+                        resolve({ prevId, nextId });
+                        return;
+                    }
+
+                    if (currentId === targetId) {
+                        foundTarget = true; // Target ID found
+                    } else {
+                        prevId = currentId; // Update the previous ID
+                    }
+
+                    cursor.continue();
+                } else {
+                    // End of store; resolve with current state
+                    resolve({ prevId, nextId });
+                }
+            };
+
+            request.onerror = (event) => {
+                console.error("Cursor error:", event.target.error);
+                reject(event.target.error);
+            };
+        });
+    }
+
+
+    getAllDataSort = async (sortField = null, sortDirection = 'next') => {
+
+        const db = await this.dbPromise;
 
             return new Promise((resolve) => {
                 const transaction = db.transaction(this.storeName, 'readonly');

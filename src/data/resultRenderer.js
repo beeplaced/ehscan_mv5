@@ -170,34 +170,28 @@ const resultLiterals = {
     // },
     risk_assessment: (data) => {
         const RISK_ASSESSMENT = data.content['Risk Evaluation']
-        console.log(RISK_ASSESSMENT)
-
 
         const result = {}
-        //{ ratingClr, title, subTitle, maintext, subText, checked, action } 
 
         let html = segmentHeadlineText('Risk Evaluation')
         const hazards = RISK_ASSESSMENT
         .filter(f => !f.deleted)
         .sort((a, b) => b.risk_rating - a.risk_rating)
-            .map(({ c, hazard, type, likelihood, severity, risk_rating, comment, area, decision, compliance, solved = false, safeguards }) => {
-            console.log(compliance)
+            .map(({ c, hazard, type, likelihood, severity, risk_rating, comment, area, decision, compliance, checked = false, safeguards }) => {
             const { action, bck_color } = getHazardRangeColor(risk_rating)
 
-            let complianceTerm = '';
-
+            let complianceTerm = [];
             if (compliance) {
                 compliance.forEach(c => {
-                    complianceTerm += c.regulation;
+                    let intern = c.regulation
                     c.clauses.forEach(cl => {
-                        complianceTerm += ` - ${cl}`;
+                        intern += ` - ${cl}`;
                     });
+                    complianceTerm.push(intern)
                 });
             }
 
-            if (comment && comment.timestamp){
-                comment.timestamp = convertFromZulu(comment.timestamp)
-            }
+            if (comment && comment.timestamp) comment.timestamp = convertFromZulu(comment.timestamp)
 
             let res = {
                 c,
@@ -208,57 +202,17 @@ const resultLiterals = {
                 maintext: decision,
                 subText: undefined,
                 comment,
-                compliance: complianceTerm || undefined,
-                checked: solved,
+                compliance: complianceTerm,
+                checked,
                 action: action,
                 safeguards
             };
-
-                console.log(res)
                 return res
-
-            // //console.log(c, hazard, type, likelihood, severity, risk_rating, comment, solved)
-            //     html += `<div class="result-box-content press-container" data-count="${c}">`
-            //     html += `<div class="hazard-text">${type}`
-            //     if (area) html += ` - ${area}`
-            //     html += `</div>`
-            //     html += `<div class="hazard-title">${hazard}</div>`
-           
-
-            //     html += `<div class="ra-box">`
-            //     html += `<div class="results-segment-flex-col ra-hazard" style="background-color: ${bck_color}">`
-            //     html += `<div class="result-head-flex">`
-            //     html += `<div>`
-            //     html += `<div style="font-weight: 700">`
-            //     html += `${action}`
-            //     html += `</div>`
-            //     html += `<div>Rating ${risk_rating} | likelihood: ${likelihood} x severity: ${severity}</div>`
-            //     html += `</div>`
-            //     if (solved) html += `<div class="result-head-icon">${svgInst.assessments('check')}</div></div>`
-            //     html += `</div></div>`
-            //     if (decision) html += `<div class="r-b-c-comment">${decision}</div>`
-            //     if (comment) html += `<div class="r-b-c-comment"><span class="datetime-token">${convertFromZulu(comment.timestamp)}</span> ${comment.comment}</div>`
-                // if (compliance) {
-                //     html += `<div class="r-b-c-compliance">`
-                //     compliance.some(c => {
-                //         html += `<div>${c.regulation}`
-                //         c.clauses.some(cl => {
-                //             html += ` - ${cl}`
-                //         })
-                //         html += `</div>`
-                //     })
-                //     html += `</div>`
-                // }
-            //     html += `</div>`
-            //     html += `</div>`
         })
 
-        if (data.content.Description) 
-            {
-            result.description = data.content.Description
-            }
-            
-            html += `<div class='result-box-content hazard-text'>${data.content.Description}</div>`
+        if (data.content.Description) result.description = data.content.Description
+        
+        html += `<div class='result-box-content hazard-text'>${data.content.Description}</div>`
 
 
         Object.keys(data).map(a => {
@@ -266,32 +220,8 @@ const resultLiterals = {
             delete data[a]
         })
 
-
-
-        if (data.context) {
-            result.context = data.context
-
-
-            // html += segmentHeadlineText('Context')
-            // html += `<div class="results-segment-item">`
-            // html += `<div class='result-box-content hazard-text'>${data.context}</div>`
-            // html += `</div>`
-        }
-        // if (data.evidences) {
-        //     c += segmentHeadlineText('Evidences')
-        //     c += `<div class="results-segment-item">`
-        //     c += `<div class='result-box-content hazard-text'>${data.evidences}</div>`
-        //     c += `</div>`
-        // }
-        if (data.executiontime) {
-            result.executiontime = data.executiontime
-            // html += segmentHeadlineText('Execution Time')
-            // html += `<div class="results-segment-item">`
-            // html += `<div class='result-box-content hazard-text'>${data.executiontime}`
-            // if (data.promptid) html += ` <small>${data.promptid}</small>`
-            // html += `</div></div>`
-        }
-        console.log(hazards, result)
+        if (data.context) result.context = data.context
+        if (data.executiontime) result.executiontime = data.executiontime
         return { hazards, result }
     },
     // risk_observation: (data) => {
@@ -475,19 +405,16 @@ const resultLiterals = {
 export class ResultRenderer {
 
     renderResult = async ({results}) => {
-        console.log(results)
-
         return new Promise(async (resolve, reject) => {
             const last = results.length - 1
             const resultLast = results[last] //Maybe LOOP LATER
-            console.log(resultLast)
-            const baseData = resultLast.content['Risk Evaluation']
+            // console.log(resultLast)
+            // const baseData = resultLast.content['Risk Evaluation']
             //Quick fix for demo
             let assessment = resultLast.Assessment === 'iso_audit_assessment' ? 'iso_assessment' : resultLast.Assessment
             
             //{ ratingClr, title, subTitle, maintext, subText, checked, action } 
             const { hazards, result } = resultLiterals[assessment](resultLast)
-            console.log(hazards, result)
             resolve({
                 hazards,
                 result

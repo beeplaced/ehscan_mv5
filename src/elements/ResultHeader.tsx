@@ -1,19 +1,40 @@
-import { SVG } from '../svg/default'; const svgInst = new SVG();
-import TokenLibrary from '../text/TokenLibrary'; const textToken = new TokenLibrary();
+import classMap from '../sharedMap';
+const textToken = classMap.get('textToken');
+const svgInst = classMap.get('svgInst');
 
-const OpacityHeader: React.FC = ({ isAtTop, title, closeElement }) => {
+import { useNavigate } from 'react-router-dom';
+
+
+const OpacityHeader: React.FC = ({ isAtTop, title, closeElement, nextElement, prevElement }) => {
+  const navigate = useNavigate();
+  
+  const pagination = (element) => {
+     navigate(`/result/${element}`);  
+  }
 
   return (
     <>
         <header className={`header opacity result ${!isAtTop ? 'shrink' : ''}`}>
           {isAtTop && (
-            <>
-            <div onClick={() => closeElement()} dangerouslySetInnerHTML={{ __html: svgInst.segments('back') }}></div>
-            <div dangerouslySetInnerHTML={{ __html: svgInst.segments('ra') }}></div>
-            </>
+            <div className="header-close" onClick={() => closeElement()}>{textToken.getToken('close')}</div>
             )}
           <div className='header-title _t'>{title}</div>
-          {/* {isAtTop && (<div className="header-close" onClick={() => closeElement()}>{textToken.getToken('close')}</div>)} */}
+          {isAtTop && (
+            <>
+            {prevElement ? (
+              <div onClick={() => pagination(prevElement)} dangerouslySetInnerHTML={{ __html: svgInst.segments('back') }}></div>
+            ) : (
+            <>
+            <div></div>
+            </>)}
+            {nextElement ? (
+              <div onClick={() => pagination(nextElement)} dangerouslySetInnerHTML={{ __html: svgInst.segments('forward') }}></div>
+            ) : (
+            <>
+            <div></div>
+            </>)}
+            </>
+            )}       
         </header>
         </>
   )

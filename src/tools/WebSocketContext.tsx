@@ -2,11 +2,6 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 const webSocketUrl = window.location.hostname === 'localhost' ? 'ws://localhost:5683/ws' : 'wss://ehscan.com/ws'
 import { v4 as uuidv4 } from 'uuid'; // Import UUID generator
-//uuid persistent later!!!
-// Define the shape of the WebSocket message
-
-//userID
-//connectionID
 
 interface Message {
   type: string;
@@ -21,18 +16,16 @@ interface WebSocketContextType {
   sendMessage: (message: Message) => void;
 }
 
-// Create the WebSocket context with a default value
 const WebSocketContext = createContext<WebSocketContextType | undefined>(undefined);
 
-// Define the WebSocket provider component
 interface WebSocketProviderProps {
   children: ReactNode;
 }
 
 export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }) => {
-  //const [socket, setSocket] = useState<WebSocket | null>(null);
   const [message, setMessage] = useState<Message[]>([]);
   const [ws, setWs] = useState(new WebSocket(webSocketUrl));
+  const [attempts, setAttempts] = useState(0);
 
     const addToMessage = (message: Message) => {
         message.userId = localStorage.getItem('userId')
@@ -40,23 +33,29 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }
     return message
     }
 
-
   useEffect(() => {
-    // Establish WebSocket connection
-    //const ws = new WebSocket('ws://your-websocket-url');
     
      ws.onopen = async () => {
+      setAttempts(0);
+      console.log('Connected to WebSocket');
           const clientId = localStorage.getItem('clientId') || uuidv4();
           localStorage.setItem('clientId', clientId);
-      // Prepare the message with clientId and userId, and send it
           const message = addToMessage({ type: 'client-id' });
           console.log(message)
-          // Send the message through WebSocket
           ws.send(JSON.stringify(message));
     }
 
-    //ws.onopen = () => console.log('Connected to WebSocket');
-    ws.onclose = () => console.log('Disconnected from WebSocket');
+    ws.onclose = () => {
+        console.log('Disconnected from WebSocket', attempts);
+          if (attempts >= 3 ){
+            alert('Websocket failed, reload app and try again in a few moments')
+             return
+            }
+          setTimeout(() => {
+            setAttempts((prevAttempts) => prevAttempts + 1);
+              setWs(new WebSocket(webSocketUrl))
+          }, 5000);
+    }
     
     ws.onmessage = (event) => {
       const message: Message = JSON.parse(event.data); // Parse incoming message as Message type
@@ -65,23 +64,15 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }
 
     ws.onerror = (error) => {
         console.log(error)
+        console.log("attempts",attempts)
+
     };
 
     // Clean up WebSocket connection on component unmount
     return () => ws.close();
-  }, []);
+  }, [ws]);
 
   const sendMessage = (message: Message) => {
-
-    //     console.log(ws && ws.readyState === 1)
-    //     console.log(ws.readyState === 3)
-    //     console.log(ws.readyState)
-
-    //     setTimeout(() => {
-    //     console.log(ws && ws.readyState === 1)
-    //   }, 1000); // Wait 1 second before retrying once
-
-    //const message = addToMessage({ type: 'client-id' });
     
     const completeMessage = addToMessage(message);
 

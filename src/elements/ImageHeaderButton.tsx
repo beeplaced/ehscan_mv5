@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import TokenLibrary from '../text/TokenLibrary'; const textToken = new TokenLibrary();
+import classMap from '../sharedMap';
+const textToken = classMap.get('textToken');
 
 const ImageHeaderButton: React.FC = ({type, onClick}) => {
 

@@ -11,14 +11,13 @@ const hazardRange = [
     { bck_color: "#ffb833", font_color: "#000000", range: [7, 9], action: "Monitor closely" },
     { bck_color: "#FFD700", font_color: "#000000", range: [10, 12], action: "Heightened monitoring required" },
     { bck_color: "#FF8C00", font_color: "#FFFFFF", range: [13, 18], action: "Take preventive measures" },
-    { bck_color: "#FF0000", font_color: "#FFFFFF", range: [19, 24], action: "Implement immediate action" },
+    { bck_color: "#D1011B", font_color: "#FFFFFF", range: [19, 24], action: "Implement immediate action" },
     { bck_color: "#8B00FF", font_color: "#FFFFFF", range: [25, 25], action: "Immediate intervention necessary" }
 ];
 
 export const hazardRangeExt = () => {
     return hazardRange
 }
-
 
 export const getHazardRangeColor = (number) => {
     if (number > 25) number = 25;

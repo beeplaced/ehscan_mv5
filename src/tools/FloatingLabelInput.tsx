@@ -17,6 +17,7 @@ const FloatingLabelInput: React.FC<FloatingLabelInputProps> = ({ label, value, o
         onChange={(e) => onChange(e.target.value)}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(!!value)}
+        spellCheck={false}
         className="floating-input _element"
       />
       <label className={`floating-label ${isFocused || value ? 'active' : ''}`}>

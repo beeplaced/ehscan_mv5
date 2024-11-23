@@ -51,11 +51,11 @@ const [inputValue, setInputValue] = useState(init);
       if (dialogClose) closeDialog();
   }, [dialogClose]);
 
-  useEffect(() => {//Load Project
-    (async () => {
-      console.log(initProject)
-    })();
-  }, [initProject]);
+  // useEffect(() => {//Load Project
+  //   (async () => {
+  //     console.log(initProject)
+  //   })();
+  // }, [initProject]);
 
   const header = () => {
     return (

@@ -1,5 +1,5 @@
-import { SVG } from '../svg/default'; const svgInst = new SVG();
-import TokenLibrary from '../text/TokenLibrary'; const textToken = new TokenLibrary();
+import classMap from '../sharedMap';
+const svgInst = classMap.get('svgInst');
 
 const AssessmentHeader: React.FC = ({ menuOpen, title, clickElement, segment }) => {
 

@@ -3,13 +3,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ImageRenderer } from '../data/images'; const ImageData = new ImageRenderer();
 import { ResultRenderer } from '../data/resultRenderer'; const ResultData = new ResultRenderer();
 import { SummaryRenderer } from '../data/summaryRenderer.js'; const SummaryData =  new SummaryRenderer();
-import { SVG } from '../svg/default'; const svgInst = new SVG();
 import useScrollListener from '../tools/useScrollListener';
-import TokenLibrary from '../text/TokenLibrary'; const textToken = new TokenLibrary();
 import AssessmentHeader from '../elements/AssessmentHeader';
 import Loader from '../tools/Loader';
 import HazardSegmentDongle from '../elements/HazardSegmentDongle';
 import FloatingActionButtons from '../elements/FloatingActionButtons';
+import classMap from '../sharedMap';
+const textToken = classMap.get('textToken');
 
 const ProjectResult: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Access the id parameter
@@ -21,10 +21,8 @@ const ProjectResult: React.FC = () => {
   const [inputSha, setInputSha] = useState('');
   const { scrollRef, isAtTop } = useScrollListener({ scrollDown: false });
   const [loading, setLoading] = useState(false);
-
   const [isFabOpen, setIsFabOpen] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
-
 
   useEffect(() => {
     (async () => {

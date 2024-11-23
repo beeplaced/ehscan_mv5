@@ -5,18 +5,14 @@ type TokenEntry = {
     [key: string]: string; // Allows additional language properties
 };
 
-class TokenLibrary {
-    private lang: string;
-    private tokens: TokenEntry[];
-
-    constructor(lang: string = 'de') {
-        this.lang = lang;
-        this.tokens = [
+const tokens = [
             { token: 'fotos', en: 'Photos', de: 'Bilder' },
             { token: 'back', en: 'back', de: 'zurück' },
             { token: 'riskAssessment', en: 'Risk Assessment', de: 'Gefährdungsbeurteilung' },           
             { token: 'close', en: 'close', de: 'schließen' },
             { token: 'cancel', en: 'cancel', de: 'abbrechen' },
+            { token: 'downloadChecklist', en: 'download Checklist', de: 'checkliste herunterladen' },
+            { token: 'downloadReport', en: 'download Report', de: 'Bericht herunterladen' },           
             { token: 'settings', en: 'Settings', de: 'Einstellungen' },
             { token: 'projectOverview', en: 'Project Overview', de: 'Projektübersicht' },
             { token: 'menu', en: 'Menu', de: 'Menü' },
@@ -41,12 +37,19 @@ class TokenLibrary {
                 en: 'No more results available. Take additional photos for instant, one-click risk analysis.',
                 de: 'Es sind noch keine Ergebnisse verfügbar. Updates sind auf dem Weg'
             },
-            { token: 'newProject', 
+            { token: 'slogan', 
                 en: 'Upload your photos for one-click automated risk analysis. Get valuable insights and generate comprehensive reports instantly', 
                 de: 'Laden Sie Ihre Fotos für eine automatische Risikoanalyse mit nur einem Klick hoch. Erhalten Sie wertvolle Einblicke und erstellen Sie sofort umfassende Berichte'
             },
             { token: 'btn_newProject', en: 'create new Project', de: 'neues Projekt erstellen' },
         ];
+
+class TokenLibrary {
+    private lang: string;
+
+    constructor() {
+        let { lang } = JSON.parse(localStorage.getItem('settings'))
+        this.lang = lang
     }
 
     // Method to set the language
@@ -56,7 +59,7 @@ class TokenLibrary {
 
     // Method to retrieve the text for a specific token
     public getToken(token: string): string {
-        const tokenObj = this.tokens.find(t => t.token === token);
+        const tokenObj = tokens.find(t => t.token === token);
 
         // If token is not found or the language is not available, return a default message
         if (!tokenObj || !tokenObj[this.lang]) {

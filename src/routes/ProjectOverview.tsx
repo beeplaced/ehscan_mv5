@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ImageRenderer } from '../data/images'; const ImageData = new ImageRenderer();
-import { SVG } from '../svg/default'; const svgInst = new SVG();
 import useScrollListener from '../tools/useScrollListener';
-import TokenLibrary from '../text/TokenLibrary'; const textToken = new TokenLibrary();
 import OpacityHeader from '../elements/OpacityHeader';
 import { API } from '../data/API.js'; const api = new API();
 import ProjectDongle from '../elements/ProjectDongle';
+
+import classMap from '../sharedMap';
+const textToken = classMap.get('textToken');
 
 const ProjectResult: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Access the id parameter

@@ -1,7 +1,7 @@
 import { SVG } from '../svg/default'; const svgInst = new SVG();
 import TokenLibrary from '../text/TokenLibrary'; const textToken = new TokenLibrary();
 
-const OpacityHeader: React.FC = ({ isAtTop, title, closeElement, segment = 'ra' }) => {
+const OpacityHeader: React.FC = ({ isAtTop, title, closeElement, segment = 'ra_overview' }) => {
 
   return (
     <>

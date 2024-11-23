@@ -1,37 +1,51 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ButtonRipple from '../elements/ButtonRipple';
-import TokenLibrary from '../text/TokenLibrary'; const textToken = new TokenLibrary();
+import { API } from '../data/API.js'; const api = new API();
+
+import classMap from '../sharedMap';
+const textToken = classMap.get('textToken');
 
 const FloatingActionButtons = ({ isOpen, setIsOpen, setShowDialog, project, type = 'default', position = 'bottom' }) => {
   
   const navigate = useNavigate();
 
+  const [loaderIndex, setLoaderIndex] = useState('')
+
   const menus = {
     default: [
-    {txt: 'createNewProject', click: 'newProject'},
     {txt: 'projectOverview', click: 'allProjects'},
-    {txt: 'select Images', click: 'editImages'},
+    {txt: 'createNewProject', click: 'newProject'},
+    // {txt: 'select Images', click: 'editImages'},
     {txt: 'view Analyse, result, assessment', click: 'analyze'},
-    {txt: 'Download Report', click: 'report'},
+    {txt: 'downloadReport', click: 'report'},
+    {txt: 'downloadChecklist', click: 'checklist'},
     // {txt: 'edit Project', click: 'editProject'}
   ],
     assessment: [
     {txt: 'projectOverview', click: 'allProjects'},
-    {txt: 'open All Assessments', click: 'openAll'},
+    // {txt: 'open All Assessments', click: 'openAll'},
     {txt: 'Download Report', click: 'report'},
-    // {txt: 'edit Project', click: 'editProject'}
+    {txt: 'downloadChecklist', click: 'checklist'},
   ]
   }
 
 
-  const [visibleButtons, setVisibleButtons] = useState(menus[type]);
+  const [visibleButtons] = useState(menus[type]);
 
   const handleClick = (type) => {
     console.log(type)
 
-    setTimeout(() => {
+    setTimeout( async () => {
+      let closeAfter = true
     switch (type) {
+      case 'report':
+      case 'checklist':
+        closeAfter = false
+        setLoaderIndex(type)
+        await api.getReport({ project, report: type })
+        setLoaderIndex('')
+        break;
       case 'newProject':
         setShowDialog(true)
         break;
@@ -47,7 +61,7 @@ const FloatingActionButtons = ({ isOpen, setIsOpen, setShowDialog, project, type
       default:
         break;
     }
-    setIsOpen(false)
+    if (closeAfter) setIsOpen(false)
     }, 200);
   };
 
@@ -58,7 +72,11 @@ return (
         {visibleButtons.map(({ txt, click }, index) => (
           <div key={index} className="">
             <div className="floating-btn" onClick={() => handleClick(click)}>
-              <ButtonRipple index={index} text={textToken.getToken(txt)} />
+                <ButtonRipple
+                  index={index}
+                  text={textToken.getToken(txt)}
+                  loader={loaderIndex === click}
+                />
             </div>
           </div>
         ))}

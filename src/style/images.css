@@ -138,7 +138,7 @@
 }
 
 .img-result-dongle{
-    --ird: 15px;
+    --ird: 20%;
     background-color: #003dff;
     width: var(--ird);
     height: var(--ird);
@@ -329,7 +329,7 @@
 
 .image-result-wrapper{
 width: 100%;
-padding: 15px;  
+padding: 0 15px;  
 }
 
 /* .image-result-box-image{
@@ -625,7 +625,7 @@ padding: 5px 0;
     background-color: white;
     border-radius: 50px;
     display: flex;
-    height: 10px;
+    height: 6px;
     justify-content: left;
     width: 100%;
 }
@@ -726,7 +726,7 @@ border-radius:0 4px 4px 0;
 }
 
 .img-container-small{
-    --w-ms: 150px;
+    --w-ms: 250px;
     position: relative;
     width: 100%;
     height: var(--w-ms);

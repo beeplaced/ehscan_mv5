@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import TokenLibrary from '../text/TokenLibrary'; const textToken = new TokenLibrary();
 import { SVG } from '../svg/default'; const svgInst = new SVG();
 import ProjectDongle from '../elements/ProjectDongle';
-import classMap from '../tools/sharedMap';
+import classMap from '../sharedMap';
 // interface OverlayDialogProps {
 //   isOpen: boolean;
 //   onClose: () => void;

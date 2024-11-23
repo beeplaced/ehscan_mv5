@@ -6,10 +6,13 @@ import './style/images.css'
 import './style/dialog.css'
 import './style/tools.css'
 import 'swiper/css';
+import './localStorageHandler';
+
+
 import App from './App'
 const container = document.getElementById('root')!;
 const root = createRoot(container);
-import classMap from './tools/sharedMap';
+
 import { ImageRenderer } from './data/images'; const ImageData = new ImageRenderer();
 const serviveUrl = '/service-worker.js'
 

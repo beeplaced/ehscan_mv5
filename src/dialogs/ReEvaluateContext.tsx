@@ -22,9 +22,6 @@ const scrollRef = useRef<HTMLDivElement>(null);
 
   //logic
   useEffect(() => {
-
-    console.log(entryValue)
-
     let valEntry = {
       ...entryValue
     }
