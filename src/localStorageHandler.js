@@ -15,6 +15,6 @@ let settings = JSON.parse(localStorage.getItem('settings')) || {
 
 if (!localStorage.getItem('settings')) localStorage.setItem('settings', JSON.stringify(settings));
 localStorage.setItem('userId', 'user-123')
-localStorage.setItem('tenant', 'demo_mv5')
+localStorage.setItem('tenant', 'demoData_mv5')
 
 console.log(localStorage)

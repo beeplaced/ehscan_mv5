@@ -48,7 +48,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }
     ws.onclose = () => {
         console.log('Disconnected from WebSocket', attempts);
           if (attempts >= 3 ){
-            alert('Websocket failed, reload app and try again in a few moments')
+            //alert('Websocket failed, reload app and try again in a few moments')
              return
             }
           setTimeout(() => {
