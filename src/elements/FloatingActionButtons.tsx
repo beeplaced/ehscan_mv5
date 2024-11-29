@@ -16,8 +16,11 @@ const FloatingActionButtons = ({ isOpen, setIsOpen, setShowDialog, project, type
     default: [
     {txt: 'projectOverview', click: 'allProjects'},
     {txt: 'createNewProject', click: 'newProject'},
+    {txt: '-' },
     // {txt: 'select Images', click: 'editImages'},
+    {txt: 'view Checklist', click: 'analyze'},
     {txt: 'view Analyse, result, assessment', click: 'analyze'},
+    {txt: '-' },
     {txt: 'downloadReport', click: 'report'},
     {txt: 'downloadChecklist', click: 'checklist'},
     // {txt: 'edit Project', click: 'editProject'}
@@ -70,15 +73,19 @@ return (
     {isOpen && (
       <div className="fab-buttons">
         {visibleButtons.map(({ txt, click }, index) => (
-          <div key={index} className="">
-            <div className="floating-btn" onClick={() => handleClick(click)}>
+          txt === '-' ? (
+            <div className='floating-btn-divider'/>
+          ) : (
+            <div key={index} className="">
+              <div className="floating-btn" onClick={() => handleClick(click)}>
                 <ButtonRipple
                   index={index}
                   text={textToken.getToken(txt)}
                   loader={loaderIndex === click}
                 />
+              </div>
             </div>
-          </div>
+          )
         ))}
       </div>
     )}

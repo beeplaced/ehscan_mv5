@@ -8,6 +8,8 @@ import ResultInfo from '../components/ResultInfo';
 import useScrollListener from '../tools/useScrollListener';
 import ButtonRipple from '../elements/ButtonRipple';
 import Popup from '../dialogs/Popup';
+import CheckListItem from "../elements/CheckListItem";
+
 
 import classMap from '../sharedMap';
 const textToken = classMap.get('textToken');
@@ -153,24 +155,23 @@ const ImageResult: React.FC = () => {
               <div className='result-loop-header-text-sub'>{subTitle}</div>
               </div>
               <div className='result-loop-header-edit'>
-                <div onClick={() => btnClick(resultIndex)} dangerouslySetInnerHTML={{ __html: svgInst.pencil() }}></div>
+                <div className="edit-pencil" onClick={() => btnClick(resultIndex)} dangerouslySetInnerHTML={{ __html: svgInst.pencil() }}></div>
                 </div>
                 </div>
                 <div className='result-loop-action-row'>{action}</div>
                 {safeguards && (
                   <div className='result-loop-safeguard-row'>
-                    <ul>
-                      {ulStyle(safeguards)}
-                    </ul>
+                    {safeguardsSplit(safeguards)}
                   </div>
                 )}
                 <div className='result-loop-main-text'>{maintext}</div>
                 {commentElement(comment)}
-                </div>
+
                 {subText && (<div className='result-loop-sub-text'>{subText}</div>)}
                 {compliance && compliance.length > 0 && (<div className='result-loop-sub-text'>
                 <ul>{compliance.map((c, index) => c.trim() && <li key={index}>{c.trim()}</li>)}</ul>
                 </div>)}
+                </div>
       </>
     )
   }
@@ -180,6 +181,12 @@ const ImageResult: React.FC = () => {
         t.trim() && <li key={index}>{t.trim()}</li>
     )
   }
+
+  const safeguardsSplit = (text) => {
+    return text.split('.').map((txt, id) => 
+      txt.trim() && <CheckListItem key={id} entry={{ selected: false, txt, id }} />
+)
+}
 
   const mainTitle = () => {
     return (

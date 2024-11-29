@@ -42,7 +42,65 @@ opacity: 1; /* Make visible when open */
     padding-top: calc(var(--header-height) + 5px);
 }
 
+.floating-btn-divider{
+  width: 180px;
+  border: 0.5px dashed darkgray;
+  margin: 5px;
+  
+}
 
+
+/* CheckBox */
+
+
+._checkbox {
+  cursor:pointer;
+  }
+  
+  .checkbox-row{
+    display: grid;
+    user-select: none;
+    grid-template-columns: 35px 1fr;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 0;
+  }
+  
+  .checkbox-logo {
+    display: flex;
+    justify-content: center;
+}
+
+  .checkbox-row:hover ._ch_b_c {
+  animation-duration:var(--check-hover);
+  animation-fill-mode:forwards;
+  animation-name:chb;
+  animation-timing-function:ease-in-out
+  }
+  
+  @keyframes chb {
+  to {
+  fill: var(--window-blue-header-bck-color)
+  }
+  }
+  
+  .checkbox-row:hover ._ch_b_s {
+  animation-duration:var(--check-hover);
+  animation-fill-mode:forwards;
+  animation-name:chs;
+  animation-timing-function:ease-in-out
+  }
+  
+  @keyframes chs {
+  to {
+  fill:var(--base-color)
+  }
+  }
+  
+  .checkbox-row:hover {
+  background-color:var(--hover-clr);
+  cursor:pointer
+  }
 
 .dialog-content.assessment{
     padding: 0;

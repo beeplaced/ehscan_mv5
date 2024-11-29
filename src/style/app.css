@@ -30,7 +30,8 @@
     --project-border-radius: 6px;
     --project-box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
     --assessment-circle: var(--body-color);
-    --img-border-radius: 4px;
+    --img-border-radius: 12px;
+    --img-border-radius-small: 4px;
     --element-spacer-height: 200px;
     --back-arrow-header-fill: var(--text-clr);
     --pr-do-bck-clr: var(--footer-btn-bck-clr);
@@ -60,6 +61,10 @@
     --input-clr: var(--text-clr);
     --input-margin: 30px 0;
     --input-align: left;
+    --check-hover:.2s;
+    --base-color:#fff;
+    --window-blue-header-bck-color:hsl(210,79%,60%);
+    --hover-clr: aliceblue;
     }
 
 /* Styles for mobile web */
@@ -281,7 +286,7 @@ body{
   box-shadow: rgba(27, 31, 35, 0.04) 0px 1px 0px, rgba(255, 255, 255, 0.25) 0px 1px 0px inset;
   padding: var(--header-op-padding);
   --header-font-size: 18px;
-  --header-font-weight: 300;
+  --header-font-weight: 400;
 }
 
 .header.opacity.main{
@@ -323,7 +328,7 @@ header.opacity.shrink {
   font-size: var(--header-font-size);
   font-weight: var(--header-font-weight);
   justify-content: var(--header-title-justify);
-  margin: 3px 10px 0 10px;
+  margin: 0 10px;
   color: var(--attention-clr-4);
 }
 

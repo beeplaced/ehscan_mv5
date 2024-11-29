@@ -346,7 +346,7 @@ padding: 0 15px;
     object-fit: scale-down;
     width: 100%;
     align-content: flex-start;
-    border-radius: var(--img-border-radius);
+    border-radius: var(--img-border-radius-small);
     display: grid;
 }
 

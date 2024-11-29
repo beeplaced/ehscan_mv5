@@ -14,7 +14,6 @@ const ImageLoop = forwardRef(({ images, projectFlow = false, edit = false }, ref
   const [itemsToSync, setItemsToSync] = useState([]);
   const [incompleteItems, setIncompleteItems] = useState([]);
 
-
   useEffect(() => {//CHANGES BY MESSAGE
     if (!message || message.length === 0) return
 
@@ -35,10 +34,10 @@ const ImageLoop = forwardRef(({ images, projectFlow = false, edit = false }, ref
           const { sync, sha } = message
           const imageID = await ImageData.imgIDBySHA(sha)
           switch (true) {
-                case sha && sync === false:
+                case sha && sync === true:
                       setItemsToSync((prevSyncItems) => [...new Set([...prevSyncItems, imageID])]);//add
                     break;
-                  case sha && sync === true:
+                  case sha && sync === false:
                       setItemsToSync((prevSyncItems) => prevSyncItems.filter((syncId) => syncId !== imageID));//remove
                     break;
                 }

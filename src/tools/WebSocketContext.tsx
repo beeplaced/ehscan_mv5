@@ -43,6 +43,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }
           const message = addToMessage({ type: 'client-id' });
           console.log(message)
           ws.send(JSON.stringify(message));
+          //Check Pending tasks on load, if they are not finished
     }
 
     ws.onclose = () => {
