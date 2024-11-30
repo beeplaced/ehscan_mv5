@@ -1,11 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
-const SwipeReveal = ({ index, actions, children, isSwipedOpen, setIsSwipedOpen }) => {
+import classMap from '../sharedMap';
+const textToken = classMap.get('textToken');
+const svgInst = classMap.get('svgInst');
+
+const SwipeReveal = ({ index, actions, children, isSwipedOpen, setIsSwipedOpen, setOpen }) => {
   const swipeContainerRef = useRef<HTMLDivElement | null>(null);
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [isSwiping, setIsSwiping] = useState(false);
   const [isFading, setIsFading] = useState(false); // Track the fade state
-  const maxSwipe = -actions.length * 100; // Maximum swipe distance
+  const maxSwipe = -200//actions.length * 100; // Maximum swipe distance
   let startX = 0;
   let startY = 0;
 
@@ -40,9 +44,9 @@ const SwipeReveal = ({ index, actions, children, isSwipedOpen, setIsSwipedOpen }
   };
 
   const openFull = () => {
-    console.log(index)
     setSwipeOffset(maxSwipe); // Fully reveal buttons
-    setIsSwipedOpen(index)
+    setIsSwipedOpen(index);
+    setOpen(true)
   }
 
   useEffect(() => {
@@ -57,6 +61,7 @@ const SwipeReveal = ({ index, actions, children, isSwipedOpen, setIsSwipedOpen }
   }, [isSwiping]); 
 
   const triggerFade = () => {
+    setOpen(false);
     setIsFading(true);
     setSwipeOffset(0); // Start fading
     setTimeout(() => setIsFading(false), 300); // Duration of the fade (matches CSS)
@@ -84,9 +89,8 @@ const SwipeReveal = ({ index, actions, children, isSwipedOpen, setIsSwipedOpen }
         <div className="main-content">{children}</div>
         <div className="action-buttons">
           {actions.map((action, index) => (
-            <div
-              key={index}
-              className="action-button"
+            <div key={index}
+              className={`action-button ${action.class}`}
               onClick={() => triggerFade()}>
               {action.label}
             </div>

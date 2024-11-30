@@ -5,12 +5,11 @@ import OpacityHeader from '../elements/OpacityHeader.js';
 import { API } from '../data/API.js'; const api = new API();
 import CheckListItem from "../elements/CheckListItem";
 
-import SwipeReveal from "../elements/SwipeReveal";
-
 import { getHazardRangeColor } from '../data/levels.js';
+import classMap from '../sharedMap';
+const svgInst = classMap.get('svgInst');
 
-import classMap from '../sharedMap.js';
-const textToken = classMap.get('textToken');
+// const textToken = classMap.get('textToken');
 
 const ProjectResult: React.FC = () => {
   const { id } = useParams<{ id: string }>(); // Access the id parameter
@@ -40,7 +39,6 @@ const ProjectResult: React.FC = () => {
             .map(([rating, safeguardList], index) => {
               // Get the action and background color for the current rating
               const { action, bck_color } = getHazardRangeColor(rating);
-    
               return (
                 <div key={index}>
                   {/* Header for each risk_rating with the color ball */}
@@ -54,9 +52,7 @@ const ProjectResult: React.FC = () => {
                     </div>
                   {safeguardList.map((txt, id) => (
                     <div className='checklist-item' key={id}>
-                    <SwipeReveal index={id} actions={actions} isSwipedOpen={isSwipedOpen} setIsSwipedOpen={setIsSwipedOpen}>
-                      <CheckListItem key={id} entry={{ selected: false, txt, id }} open={id === isSwipedOpen} />
-                    </SwipeReveal>
+                    <CheckListItem key={id} entry={{ selected: false, txt, id }} isSwipedOpen={isSwipedOpen} setIsSwipedOpen={setIsSwipedOpen}/>
                     </div>
                   ))}
                 </div>
@@ -66,13 +62,7 @@ const ProjectResult: React.FC = () => {
         </div>
       );
     };
-    
-    const actions = [
-      { label: "Delete", onClick: () => alert("Deleted!") },
-      { label: "Block", onClick: () => alert("Blocked!") },
-      { label: "Edit", onClick: () => alert("Edit!") },
-    ];
-    
+        
   return (
     <>
     <OpacityHeader isAtTop={isAtTop} title={title} closeElement={closeElement}/>

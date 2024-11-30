@@ -78,7 +78,6 @@ const onChange = (newSettings) => {
 const handleRipple = useRipple(); // Use the custom hook
 
 const handleButtonClick = (event) => {
-    console.log('a')
     handleRipple(event, buttonRef);
     navigate(`/account/`); 
   };

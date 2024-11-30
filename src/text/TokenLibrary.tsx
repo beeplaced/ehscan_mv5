@@ -25,7 +25,7 @@ const tokens = [
             { token: 'account', en: 'Account', de: 'Konto' },
             { token: 'editHazard', en: 'edit hazard', de: 'Gefahr editieren' },
             { token: 'evaluateTask', en: 'create analysis task', de: 'Analyse erstellen' },
-            { token: 'reEval', en: 'Revaluation', de: 'Neubewertung' },
+            { token: 'reEval', en: 'Re-evaluation', de: 'Neubewertung' },
             { token: 'projects', en: 'projects', de: 'projekte' },
             { token: 'createNewProject', en: 'create new Project', de: 'neues Projekt erstellen' },
             { token: 'allProjects', en: 'click on a project to view the results and overview.', de: 'Klicken Sie auf ein Projekt, um die Ergebnisse und die Übersicht anzuzeigen.' },         

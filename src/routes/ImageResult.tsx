@@ -10,7 +10,6 @@ import ButtonRipple from '../elements/ButtonRipple';
 import Popup from '../dialogs/Popup';
 import CheckListItem from "../elements/CheckListItem";
 
-
 import classMap from '../sharedMap';
 const textToken = classMap.get('textToken');
 const svgInst = classMap.get('svgInst');
@@ -126,7 +125,7 @@ const ImageResult: React.FC = () => {
             <div className='image-result-divider'></div>
             <div className='comment-wrapper'>
               <div className='comment-main'>
-                <div dangerouslySetInnerHTML={{ __html: svgInst.comment() }}></div>
+                <div dangerouslySetInnerHTML={{ __html: svgInst.comment() }}/>
                 <div className='comment-text'>{comment.comment}</div>
                 </div>
                 <div className='datetime-token'>{comment.timestamp}</div>
@@ -160,6 +159,10 @@ const ImageResult: React.FC = () => {
                 </div>
                 </div>
                 <div className='result-loop-main-text'>{maintext}</div>
+                {compliance && compliance.length > 0 && (<>
+                  <div className='result-loop-sub-text'>
+                <ul>{compliance.map((c, index) => c.trim() && <li key={index}>{c.trim()}</li>)}</ul>
+                </div></>)}
                 <div className='image-result-divider'></div>
                 <div className='result-loop-action-row'>{action}</div>
                 {safeguards && (
@@ -168,11 +171,7 @@ const ImageResult: React.FC = () => {
                   </div>
                 )}
                 {commentElement(comment)}
-
                 {subText && (<div className='result-loop-sub-text'>{subText}</div>)}
-                {compliance && compliance.length > 0 && (<div className='result-loop-sub-text'>
-                <ul>{compliance.map((c, index) => c.trim() && <li key={index}>{c.trim()}</li>)}</ul>
-                </div>)}
                 </div>
       </>
     )
@@ -200,9 +199,9 @@ const ImageResult: React.FC = () => {
   const mainTitle = () => {
     return (
       <>
-                                <div className='result-loop-main-title'>
-                            <div dangerouslySetInnerHTML={{ __html: svgInst.segments('ra') }}></div>
-                            {textToken.getToken('riskAssessment')}</div>
+      <div className='result-loop-main-title'>
+        <div dangerouslySetInnerHTML={{ __html: svgInst.segments('ra') }}></div>
+        {textToken.getToken('riskAssessment')}</div>
       </>
     )
   }
@@ -243,6 +242,7 @@ const ImageResult: React.FC = () => {
                                <div className='result-loop-sub-wrapper'>{description}</div>
                               </>
                           )}
+
                       </div>
                     </div>
                   </>

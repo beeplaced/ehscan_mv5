@@ -719,12 +719,12 @@ border-radius:0 4px 4px 0;
   font-weight: 500;
   color: white;
   background-color: #FFD700;
-  box-shadow: 0 0 30px 0 rgba(82, 63, 105, 0.05);
 }
 
 .image-result-divider{
   border-bottom: .5px solid var(--body-color);
   width: 100%;
+  padding: 2px 0;
 }
 
 .quick-result-text{
