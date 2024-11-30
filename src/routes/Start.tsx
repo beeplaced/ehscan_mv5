@@ -50,7 +50,6 @@ const Start: React.FC = () => {
     };
   
     const handleButtonClick = async () => {
-
     
     const { title } = inputValue
 
