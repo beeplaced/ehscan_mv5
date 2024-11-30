@@ -297,6 +297,29 @@ export class API {
         }
     };
 
+    getSafeGuards = async (entry) => {
+
+        try {
+            const headers = {
+                ...entry,
+                tenant
+            }
+ 
+             const options = {
+                 url: `${gatewayUrl}/get-safeguards`,
+                 method: 'GET',
+                 headers
+             };
+             const response = await axios(options);
+             const result = response.data.result
+             console.log(result)
+             return result.safeguards
+         } catch (error) {
+             console.error('Error sending image:', error);
+             throw error;
+         }
+     };
+
     elementSearch = async (entry) => {
 
        try {

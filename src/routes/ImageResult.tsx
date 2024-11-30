@@ -123,6 +123,7 @@ const ImageResult: React.FC = () => {
       <>
         {comment && (
             <>
+            <div className='image-result-divider'></div>
             <div className='comment-wrapper'>
               <div className='comment-main'>
                 <div dangerouslySetInnerHTML={{ __html: svgInst.comment() }}></div>
@@ -158,13 +159,14 @@ const ImageResult: React.FC = () => {
                 <div className="edit-pencil" onClick={() => btnClick(resultIndex)} dangerouslySetInnerHTML={{ __html: svgInst.pencil() }}></div>
                 </div>
                 </div>
+                <div className='result-loop-main-text'>{maintext}</div>
+                <div className='image-result-divider'></div>
                 <div className='result-loop-action-row'>{action}</div>
                 {safeguards && (
                   <div className='result-loop-safeguard-row'>
                     {safeguardsSplit(safeguards)}
                   </div>
                 )}
-                <div className='result-loop-main-text'>{maintext}</div>
                 {commentElement(comment)}
 
                 {subText && (<div className='result-loop-sub-text'>{subText}</div>)}
@@ -182,11 +184,18 @@ const ImageResult: React.FC = () => {
     )
   }
 
-  const safeguardsSplit = (text) => {
-    return text.split('.').map((txt, id) => 
-      txt.trim() && <CheckListItem key={id} entry={{ selected: false, txt, id }} />
-)
-}
+  const safeguardsSplit = (safeguards) => {
+    return safeguards.map((safeguard, id) => {
+      // Check if safeguard is an object or a string
+      const txt = typeof safeguard === 'string' ? safeguard : safeguard.txt;
+      const selected = typeof safeguard === 'string' ? false : safeguard.selected || false;
+  
+      return (
+        <CheckListItem key={id} entry={{ selected, txt, id }} />
+      );
+    });
+  };
+  
 
   const mainTitle = () => {
     return (

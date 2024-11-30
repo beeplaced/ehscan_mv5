@@ -43,7 +43,7 @@ opacity: 1; /* Make visible when open */
 }
 
 .floating-btn-divider{
-  width: 180px;
+  width: 150px;
   border: 0.5px dashed darkgray;
   margin: 5px;
   
@@ -52,6 +52,22 @@ opacity: 1; /* Make visible when open */
 
 /* CheckBox */
 
+.checklist-header-wrapper{
+  display: grid ;
+  flex-direction: row;
+      grid-template-columns: 35px 1fr;
+align-items: center;
+    }
+
+.checklist-item{
+  display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      background-color: white;
+      border-radius: 4px;
+      margin: 10px 0;
+      box-shadow: 0 0 30px 0 rgba(82, 63, 105, 0.05);
+  }
 
 ._checkbox {
   cursor:pointer;
@@ -61,14 +77,17 @@ opacity: 1; /* Make visible when open */
     display: grid;
     user-select: none;
     grid-template-columns: 35px 1fr;
-    align-items: center;
     justify-content: center;
-    padding: 5px 0;
+    align-items: center;
+    width: 100%;
+    border-radius: 11px;
+    min-height: 50px;
   }
   
   .checkbox-logo {
     display: flex;
     justify-content: center;
+    padding: 2px 0;
 }
 
   .checkbox-row:hover ._ch_b_c {
@@ -224,4 +243,55 @@ top: calc(var(--header-height) + 5px);
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+
+/* Swipe to reveal */
+.swipe-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: #f1f1f1;
+}
+
+.swipe-content {
+  display: flex;
+  width: calc(100% + 300px); /* Accommodate action buttons */
+  background: #fff;
+}
+
+.swipe-content.transition {
+  transition: transform 0.3s ease; /* Smooth animation on swipe end */
+}
+
+.swipe-content.fading {
+  transition: transform 0.5s ease-in-out; /* Smooth fade to zero */
+}
+
+.main-content {
+  flex: 1; /* Fill the visible width */
+  background: white;
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: row;
+}
+
+.action-button {
+  width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: red;
+  color: white;
+  font-size: 16px;
+}
+
+.action-button:nth-child(2) {
+  background: orange;
+}
+
+.action-button:nth-child(3) {
+  background: blue;
 }

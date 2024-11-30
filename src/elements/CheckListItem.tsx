@@ -3,20 +3,22 @@ import React, { useState, useEffect } from "react";
 import classMap from '../sharedMap';
 const svgInst = classMap.get('svgInst');
 
-const CheckListItem: React.FC = ({ entry, onToggle }) => {
+const CheckListItem: React.FC = ({ entry, onToggle, open }) => {
 
   const [selected, setSelected] = useState(entry.selected || false)
   const [content] = useState(entry)
 
   useEffect(() => {
-
-  }, []);
+    console.log(open)
+  }, [open]);
 
   const toggleCheck = () => {
     const state = !selected
     setSelected(state)
     onToggle({ selected: state, id: entry.id })
   }
+
+  
 
   return (
     <div className="checkbox-row" onClick={() => toggleCheck()}>

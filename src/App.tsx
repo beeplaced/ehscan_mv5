@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Start from './routes/Start';
 import ImageResult from './routes/ImageResult';
 import ProjectResult from './routes/ProjectResult';
+import ProjectCheckList from './routes/ProjectCheckList';
 import ProjectView from './routes/ProjectView';
 import ProjectOverview from './routes/ProjectOverview';
 import Settings from './routes/Settings';
@@ -22,6 +23,7 @@ const App: React.FC = () => {
         <Route path="/:id" element={<ProjectView />} />
         <Route path="/result/:id" element={<ImageResult />} />
         <Route path="/assessment/:id" element={<ProjectResult />} />
+        <Route path="/checklist/:id" element={<ProjectCheckList />} />
         <Route path="/projectoverview/" element={<ProjectOverview />} />
         <Route path="/settings/" element={<Settings />} />
         <Route path="/account/" element={<Account />} />

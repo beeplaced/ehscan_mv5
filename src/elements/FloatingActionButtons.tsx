@@ -18,7 +18,7 @@ const FloatingActionButtons = ({ isOpen, setIsOpen, setShowDialog, project, type
     {txt: 'createNewProject', click: 'newProject'},
     {txt: '-' },
     // {txt: 'select Images', click: 'editImages'},
-    {txt: 'view Checklist', click: 'analyze'},
+    {txt: 'view Checklist', click: 'projectChecklist'},
     {txt: 'view Analyse, result, assessment', click: 'analyze'},
     {txt: '-' },
     {txt: 'downloadReport', click: 'report'},
@@ -55,6 +55,9 @@ const FloatingActionButtons = ({ isOpen, setIsOpen, setShowDialog, project, type
         case 'analyze':
         navigate(`/assessment/${project}`);  
         break;
+        case 'projectChecklist':
+        navigate(`/checklist/${project}`);  
+        break;       
         case 'allProjects':
         navigate(`/projectoverview/`);  
         break;
@@ -74,9 +77,9 @@ return (
       <div className="fab-buttons">
         {visibleButtons.map(({ txt, click }, index) => (
           txt === '-' ? (
-            <div className='floating-btn-divider'/>
+            <div key={index} className='floating-btn-divider'/>
           ) : (
-            <div key={index} className="">
+            <div key={index}>
               <div className="floating-btn" onClick={() => handleClick(click)}>
                 <ButtonRipple
                   index={index}
