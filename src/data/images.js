@@ -57,8 +57,8 @@ export class ImageRenderer {
         const delItems = []
 
         const promises = data
-            //.sort((a, b) => a.score - b.score)
-            .sort((a, b) => a.id - b.id)
+            .sort((a, b) => a.score - b.score)
+            //.sort((a, b) => a.id - b.id)
             .map(({ blob, id, project, score, clr }) => {
                 const url = URL.createObjectURL(blob);
                 return new Promise((resolve) => {
