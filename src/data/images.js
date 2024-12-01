@@ -74,7 +74,7 @@ export class ImageRenderer {
                     };
                     img.onerror = () => {
                         delItems.push(id)
-                        console.warn(`Blob with ID ${id} is invalid.`);
+                        alert(`Blob with ID ${id} is invalid.`);
                         resolve(null); // or handle broken blobs differently
                     };
 
@@ -85,7 +85,9 @@ export class ImageRenderer {
         // Wait for all promises and filter out invalid blobs
         const results = await Promise.all(promises);
         if (delItems.length > 0) {
-            await this.removeImages(delItems)
+            //await this.removeImages(delItems)
+            //Cant remove broken images, there are several reasons for an error, 
+            //Has to be done manually
         }
         return results.filter(Boolean);
     };
