@@ -1,6 +1,7 @@
 // WebSocketContext.tsx
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-const webSocketUrl = window.location.hostname === 'localhost' ? 'ws://localhost:5683/ws' : 'wss://ehscan.com/ws'
+const webSocketUrl = window.location.hostname === 'localhost' ? 'ws://localhost:5683/ws' : process.env.WEBSOCKET_APP
+console.log("webSocketUrl",webSocketUrl)
 import { v4 as uuidv4 } from 'uuid'; // Import UUID generator
 
 interface Message {
