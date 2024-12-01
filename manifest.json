@@ -39,7 +39,7 @@
     "related_applications": [
       {
         "platform": "windows",
-        "url": "https://www.ehscan.com"
+        "url": "https://app.ehscan.com"
       }
     ],
     "prefer_related_applications": false,
