@@ -1,14 +1,24 @@
+# Demo 12 2024
+- [x] gway handshake
+- [x] vite
+- [ ] manifest
+- [ ] theme and color
+- [ ] standalone
+- [ ] versioning
+
+
+
 # Demo 11 2024
 
-- [ ] Project Overview
-  - [ ] Show details
-- [ ] Settings
+- [x] Project Overview
+  - [x] Show details
+- [x] Settings
 - [ ] Login
-- [ ] Upload
-- [ ] Analyze
-- [ ] Result
-- [ ] Change Results
-- [ ] Download Report
+- [x] Upload
+- [x] Analyze
+- [x] Result
+- [x] Change Results
+- [x] Download Report
   - [ ] PDF Maybe
 
 
