@@ -38,7 +38,7 @@ const tokens = [
                 de: 'Es sind noch keine Ergebnisse verfügbar. Updates sind auf dem Weg'
             },
             { token: 'slogan', 
-                en: 'Set focus to ensure safety and compliance across all your Projects. Upload your photos for one-click automated risk analysis. Get valuable insights and generate comprehensive reports instantly', 
+                en: 'Set focus to ensure safety and compliance across all your Projects. Upload photos for one-click automated risk analysis. Get valuable insights and generate comprehensive reports instantly', 
                 de: 'Laden Sie Ihre Fotos für eine automatische Risikoanalyse mit nur einem Klick hoch. Erhalten Sie wertvolle Einblicke und erstellen Sie sofort umfassende Berichte'
             },
             { token: 'focuses', 
