@@ -178,6 +178,7 @@ export class API {
     };
 
     removeItem = async (entry) => {
+        return
         try {
             const userId = localStorage.getItem('userId')
             const response = await axios({
