@@ -121,7 +121,7 @@ align-items: center;
   
   @keyframes chs {
   to {
-  fill:var(--base-color)
+  fill:var(--theme-bck-clr)
   }
   }
   

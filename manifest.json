@@ -10,11 +10,11 @@
     "short_name": "Ehscan App",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "yellow",
+    "background_color": "#FFFFFF",
     "description": "Analyze photos quickly and efficiently.",
     "lang": "en",
     "dir": "auto",
-    "theme_color": "red",
+    "theme_color": "#FFFFFF",
     "orientation": "any",
     "icons": [
       {
