@@ -17,23 +17,23 @@ const Start: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-    useEffect(() => {
+    // useEffect(() => {
 
-      (async () => {
-        console.log(localStorage.getItem('project'))
-        const project = localStorage.getItem('project')
-            if (project) {
-             navigate(`/${project}`);
-              return;
-            }
-        const { title } = await api.getProject('last');        //if no project, grab from db
-        if (title) {
-          navigate(`/${title}`);
-          return;   
-        }
-        //else do not navigate
-      })();
-    }, [location]);
+    //   (async () => {
+    //     console.log(localStorage.getItem('project'))
+    //     const project = localStorage.getItem('project')
+    //         if (project) {
+    //          navigate(`/${project}`);
+    //           return;
+    //         }
+    //     const { title } = await api.getProject('last');        //if no project, grab from db
+    //     if (title) {
+    //       navigate(`/${title}`);
+    //       return;   
+    //     }
+    //     //else do not navigate
+    //   })();
+    // }, [location]);
    
     const [inputValue, setInputValue] = useState({
         title: '',
@@ -76,14 +76,17 @@ const Start: React.FC = () => {
 
     <div className='slogan'>{textToken.getToken('slogan')}</div>
 
+    
+
 
 <div className='text-blocks'>
 <FloatingLabelInput label="Start a new Project" value={inputValue.title} onChange={(value) => setValue({ title: value })} />
-<FloatingLabelInput label="Add some Assessment Focus" value={inputValue.context} onChange={(value) => setValue({ context: value })} />
+<FloatingLabelInput label="Add some Assessment Focus*" value={inputValue.context} onChange={(value) => setValue({ context: value })} />
 </div>
       <div className="start-page-button" onClick={handleButtonClick}>
         <ButtonRipple index="0" text="Let's Go"/>
       </div>
+      <div className='explanatory-slogan'>{textToken.getToken('focuses')}</div>
     </div>
   );
 

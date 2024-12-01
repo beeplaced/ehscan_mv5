@@ -559,13 +559,19 @@ header.opacity.shrink {
   --btn-border-radius: 50px;
   width: fit-content;
   font-weight: 500;
-  margin: 50px 0;
+  margin: 30px 0;
+  --ripple-box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.explanatory-slogan{
+  font-size: x-small;
+    margin: 0 20px;
 }
 
 .slogan{
     font-weight: 500;
     color: #43586D;
-    margin: 0 50px 30px 50px
+    margin: 0 50px;
 }
 
   .btn-row.create{
