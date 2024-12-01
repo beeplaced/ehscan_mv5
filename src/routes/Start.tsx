@@ -79,7 +79,7 @@ const Start: React.FC = () => {
 
 <div className='text-blocks'>
 <FloatingLabelInput label="Start a new Project" value={inputValue.title} onChange={(value) => setValue({ title: value })} />
-<FloatingLabelInput label="Define the Assessment Context / Focus" value={inputValue.context} onChange={(value) => setValue({ context: value })} />
+<FloatingLabelInput label="Add some Assessment Focus" value={inputValue.context} onChange={(value) => setValue({ context: value })} />
 </div>
       <div className="start-page-button" onClick={handleButtonClick}>
         <ButtonRipple index="0" text="Let's Go"/>

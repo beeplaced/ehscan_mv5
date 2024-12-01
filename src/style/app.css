@@ -474,15 +474,15 @@ header.opacity.shrink {
   color: #333;
   padding: 20px;
   --project-border-radius: 5px;
-  --input-bck-clr: #CCE5FF;
-  --input-padding: 10px;
+  --input-bck-clr: #e5f2ff;
+  --input-padding: 15px;
   --lable-text-align: center;
   --lable-top: -20px;
   --label-weight: 500;
   --label-size: 110%;
   --lable-color: #0051A8;
   --input-clr: darkblue;
-  --input-margin: 50px 0;
+  --input-margin: 50px 30px;
   --input-align: center;
 }
 
@@ -498,7 +498,6 @@ header.opacity.shrink {
   margin-bottom: 2rem;
 }
 .text-blocks{
-  margin: 10px 5px;
   width: 100%;
 }
 
@@ -554,21 +553,19 @@ header.opacity.shrink {
 /* ripple-button-variations */
 
 .start-page-button {
-    --btn-padding: 8px 25px;
-    --btn-bck-clr: #1083FE;
-    --btn-clr: white;
-    --btn-border-radius: 5px;
-    border-radius: var(--btn-border-radius);
-    width: 100%;
-    font-weight: 500;
-        margin: 80px 0;
+  --btn-padding: 15px 25px;
+  --btn-bck-clr: #1083FE;
+  --btn-clr: white;
+  --btn-border-radius: 50px;
+  width: fit-content;
+  font-weight: 500;
+  margin: 50px 0;
 }
 
 .slogan{
-      font-size: small;
-    font-weight: 600;
+    font-weight: 500;
     color: #43586D;
-    margin: 0 60px 30px 60px;
+    margin: 0 50px 30px 50px
 }
 
   .btn-row.create{
