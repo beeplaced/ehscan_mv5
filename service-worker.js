@@ -1,4 +1,4 @@
-const CACHE_NAME = 'my-app-cache-v1.09'; // Update version when there are changes
+const CACHE_NAME = 'my-app-cache-v1.10'; // Update version when there are changes
 const ASSETS_TO_CACHE = [
     '/',
     '/index.html'
