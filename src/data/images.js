@@ -74,10 +74,9 @@ export class ImageRenderer {
                     };
                     img.onerror = () => {
                         delItems.push(id)
-                        alert(`Blob with ID ${id} is invalid.`);
+                        //alert(`Blob with ID ${id} is invalid.`);
                         resolve(null); // or handle broken blobs differently
                     };
-
                     img.src = url;
                 });
             });
