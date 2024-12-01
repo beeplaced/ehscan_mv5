@@ -42,7 +42,7 @@ const tokens = [
                 de: 'Laden Sie Ihre Fotos für eine automatische Risikoanalyse mit nur einem Klick hoch. Erhalten Sie wertvolle Einblicke und erstellen Sie sofort umfassende Berichte'
             },
             { token: 'focuses', 
-                en: '* e.g., general hazards, oil leakage, personal equipment, falling from height, electrical safety, fire prevention, chemical handling, workplace ergonomics, machine operation', 
+                en: '* e.g., general hazards, oil leakage, personal protective equipment (PPE), falling from height, electrical safety, fire prevention, chemical handling, workplace ergonomics, machine operation', 
                 de: 'Laden Sie Ihre Fotos für eine automatische Risikoanalyse mit nur einem Klick hoch. Erhalten Sie wertvolle Einblicke und erstellen Sie sofort umfassende Berichte'
             },
 

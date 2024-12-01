@@ -17,23 +17,23 @@ const Start: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-    // useEffect(() => {
+    useEffect(() => {
 
-    //   (async () => {
-    //     console.log(localStorage.getItem('project'))
-    //     const project = localStorage.getItem('project')
-    //         if (project) {
-    //          navigate(`/${project}`);
-    //           return;
-    //         }
-    //     const { title } = await api.getProject('last');        //if no project, grab from db
-    //     if (title) {
-    //       navigate(`/${title}`);
-    //       return;   
-    //     }
-    //     //else do not navigate
-    //   })();
-    // }, [location]);
+      (async () => {
+        console.log(localStorage.getItem('project'))
+        const project = localStorage.getItem('project')
+            if (project) {
+             navigate(`/${project}`);
+              return;
+            }
+        const { title } = await api.getProject('last'); //if no project, grab from db
+        if (title) {
+          navigate(`/${title}`);
+          return;   
+        }
+        //else do not navigate
+      })();
+    }, [location]);
    
     const [inputValue, setInputValue] = useState({
         title: '',
