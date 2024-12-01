@@ -178,6 +178,7 @@ export class API {
     };
 
     removeItem = async (entry) => {
+        alert("removeItem")
         return
         try {
             const userId = localStorage.getItem('userId')
