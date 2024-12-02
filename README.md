@@ -1,10 +1,21 @@
+# Image Entry to App
+- [ ] Upload
+  - [ ] Analyze
+  - [ ] Storage of Analyzed Data
+  - [ ] Storage of score
+- [ ] Load only from inner DB
+- [x] Nothing is pre-rendered on fresh start
+  - [ ] Empty Database
+
+
+
 # Demo 12 2024
 - [x] gway handshake
 - [x] vite
-- [ ] manifest
-- [ ] theme and color
-- [ ] standalone
-- [ ] versioning
+  - [ ] manifest
+  - [ ] theme and color
+  - [ ] standalone
+  - [ ] versioning
 
 
 
@@ -19,7 +30,6 @@
 - [x] Result
 - [x] Change Results
 - [x] Download Report
-  - [ ] PDF Maybe
 
 
 # Visuals

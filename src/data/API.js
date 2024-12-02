@@ -48,6 +48,23 @@ export class API {
             throw error;
         }
     };
+
+    getProjectImageAmount = async (project) => {
+        const headers = { project, tenant };
+        try {
+            const options = {
+                url: `${gatewayUrl}/get-project-image-amount`,
+                method: 'GET',
+                headers,
+            };
+            const { data } = await axios(options);
+            const { result } = data
+            return result
+        } catch (error) {
+            console.error('Error fetching full message data:', error.message || error);
+            return {}; // Return an empty array if there's an error
+        }
+        };
     
     getProjectImageInfo = async (project) => {
     const headers = { project, tenant };
@@ -141,20 +158,30 @@ export class API {
         }
     };
 
-    getImageBatchAPI = async (allAPI) => {
-
+    getImageBatchAPI = async (allAPI) => {//Load Images from DB and Store blob and meta in indexedb
         const imagePromises = allAPI.map(async ({ sha, project, score }) => {
-            const headers = {
-                sha,
-                tenant
-            } 
+            const headers = { sha, tenant } 
             const response = await fetch(`${gatewayUrl}/images-renderer`, { headers });
             const blob = await response.blob();
             const store = await this.storeImageDB({ sha, blob, project, score })
             return { blob, project, store };
             });
-            const urls = await Promise.all(imagePromises);
-            return urls
+        return await Promise.all(imagePromises);// return urls
+    };
+
+    storeImageDB = async (entry) => {
+        const { sha, blob, project, score } = entry
+        const storeData = {
+            sha,
+            blob,
+            date: currentDate,
+            project: project
+        };
+        storeData.score = score || 0
+        storeData.clr = score ? getHazardRangeColor(score).bck_color : ''
+        const store = await _storage.storeData(storeData);
+        if (store.status === 201) return await _storage.updateData(storeData);
+        return store
     };
 
     projectResults = async (project) => {
@@ -195,22 +222,6 @@ export class API {
             console.error('Error sending image:', error);
             throw error;
         }
-    };
-
-    storeImageDB = async (entry) => {
-        const { sha, blob, project, score } = entry
-        const storeData = {
-            sha,
-            blob,
-            date: currentDate,
-            project: project
-        };
-
-        storeData.score = score || 0
-        storeData.clr = score ? getHazardRangeColor(score).bck_color : ''
-        const store = await _storage.storeData(storeData);
-        if (store.status === 201) return await _storage.updateData(storeData);
-        return store
     };
 
     getImageAPI = async ({ sha }) => {

@@ -19,77 +19,111 @@ export class ImageRenderer {
         this.searchProject = localStorage.getItem('searchProject') || ''
     }
 
-    loadProjectImagess = async (project) => {
-        let startTime = performance.now();
-        const output = await _storage.getData({ value: project, field: 'project' });
-        const res = await this.createValidImageObjects(output.data)
-        console.log('createThisBlobs:', this.executionTime(startTime));
-        return res
+    loadProjectImages = async (project) => {
+        try {
+            let startTime = performance.now();
+            const amount = await api.getProjectImageAmount(project); //checkServerImagesAmount
+            const output = await _storage.getData({ value: project, field: 'project' });
+            const { status, data } = output
+            if (status !== 200) throw new Error("Something wne twrong with inner DB");
+            if (data.length === 0 || data.length !== amount) { //Empty DB
+                return this.ReloadImagesFromServer(project)
+            }
+            const res = await this.createValidImageObjects(data);
+            console.log('create Blobs:', this.executionTime(startTime));
+            return res
+        } catch (error) {
+            console.log(error)
+        }
     }
 
-    loadProjectImages = async (project) => {
+    ReloadImagesFromServer = async (project) => {
         let startTime = performance.now();
         this.project = project
-        //load project from DB
-        const allAPI = await api.getProjectImageInfo(project)
+        const allAPI = await api.getProjectImageInfo(project) //load project from DB
         console.log('get Images from DB', allAPI)
-        //sha, project, score, clr
         const { data } = await _storage.getData({ value: project, field: 'project' });
         console.log(data)
         let allDB = data //await _storage.getAllData(); //console.log('get Images from DB', allDB)
         await this.checkImagesinDBwithAPI({ allDB, allAPI })//check all Data from DB
         const allDBShas = allDB.map(db => db.sha);
         const imagesMissingInDB = allAPI.filter(a => !allDBShas.includes(a.sha))
-        if (imagesMissingInDB.length > 0){
-            const newData = await this.addMissingDatainDB(imagesMissingInDB); console.log("newData", newData)
-        }
+        if (imagesMissingInDB.length > 0) await this.addMissingDatainDB(imagesMissingInDB); 
         const output = await _storage.getData({ value: project, field: 'project' });
         // console.log('loadProjectImages', this.executionTime(startTime));     
         // console.log(output)
         startTime = performance.now();
         const res = await this.createValidImageObjects(output.data)
-        console.log('createThisBlobs:', this.executionTime(startTime));
+        console.log('create Blobs:', this.executionTime(startTime));
         return res
     }
 
-    createValidImageObjects = async (data) => {
-
-        const delItems = []
-
-        const promises = data
-            .sort((a, b) => a.score - b.score)
-            //.sort((a, b) => a.id - b.id)
-            .map(({ blob, id, project, score, clr }) => {
-                const url = URL.createObjectURL(blob);
-                return new Promise((resolve) => {
-                    const img = new Image();
-                    img.onload = () => {
-                        resolve({
-                            imgBlob: url,
-                            id,
-                            project,
-                            ...(score !== undefined && { score }),
-                            ...(clr !== undefined && { clr }),
-                        });
-                    };
-                    img.onerror = () => {
-                        delItems.push(id)
-                        //alert(`Blob with ID ${id} is invalid.`);
-                        resolve(null); // or handle broken blobs differently
-                    };
-                    img.src = url;
-                });
-            });
-
-        // Wait for all promises and filter out invalid blobs
-        const results = await Promise.all(promises);
-        if (delItems.length > 0) {
-            //await this.removeImages(delItems)
-            //Cant remove broken images, there are several reasons for an error, 
-            //Has to be done manually
-        }
-        return results.filter(Boolean);
+    createValidImageObjects = (data) => {
+        return new Promise(async (resolve) => {
+            try {
+                const images = data
+                .sort((a, b) => a.score - b.score)
+                //.sort((a, b) => a.id - b.id)
+                .map(({ blob, id, project, score, clr }) => {
+                    if (!blob || !(blob instanceof Blob)) {
+                        alert(`Invalid blob for id ${id}`);
+                        return null; // Skip invalid blobs
+                    }
+                    return {
+                        imgBlob: URL.createObjectURL(blob),
+                        id,
+                        project,
+                        ...(score !== undefined && { score }),
+                        ...(clr !== undefined && { clr }),
+                    }
+                }).filter(Boolean); // Remove any null values
+                resolve(images);
+            } catch (error) {
+                // Alert the error
+                alert('An error occurred while rendering images: ' + error.message);
+                resolve(); // Optionally resolve with no images
+            }
+        });
     };
+
+    // createValidImageObjectsX = async (data) => {
+
+    //     const delItems = []
+
+    //     const promises = data
+    //         .sort((a, b) => a.score - b.score)
+    //         //.sort((a, b) => a.id - b.id)
+    //         .map(({ blob, id, project, score, clr }) => {
+    //             const url = URL.createObjectURL(blob);
+    //             return new Promise((resolve) => {
+    //                 const img = new Image();
+    //                 img.onload = () => {
+    //                     resolve({
+    //                         imgBlob: url,
+    //                         id,
+    //                         project,
+    //                         ...(score !== undefined && { score }),
+    //                         ...(clr !== undefined && { clr }),
+    //                     });
+    //                 };
+    //                 img.onerror = () => {
+    //                     delItems.push(id)
+    //                     //alert(`Blob with ID ${id} is invalid.`);
+    //                     resolve(null); // or handle broken blobs differently
+    //                 };
+    //                 img.src = url;
+    //             });
+    //         });
+
+    //     // Wait for all promises and filter out invalid blobs
+    //     const results = await Promise.all(promises);
+    //     if (delItems.length > 0) {
+    //         //await this.removeImages(delItems)
+    //         //Cant remove broken images, there are several reasons for an error, 
+    //         //Has to be done manually
+    //     }
+    //     return results.filter(Boolean);
+    // };
 
     sortByProject = async (project) => {
         return new Promise(async (resolve) => {
@@ -116,18 +150,14 @@ export class ImageRenderer {
     }
 
     checkImagesinDBwithAPI = async (entry) => {
-
         const { allDB, allAPI } = entry
-
         return new Promise(async (resolve) => {
             for (const dbData of allDB) {
                 const { sha, project } = dbData
                 const apiDataInDB = allAPI.find(api => api.sha === sha);
-
                 if (!apiDataInDB && this.searchProject === '') { //remove from DB, if all data is considered
                     const removeDBData = await _storage.deleteDataBySha(sha); console.log("removeDBData", removeDBData)
                 }
-
                 if (apiDataInDB && apiDataInDB.project !== project) {//change project in DB
                     dbData.project = apiDataInDB.project;
                     dbData.date = currentDate
@@ -144,7 +174,7 @@ export class ImageRenderer {
             if (imagesMissingInDB.length > 0) {
                 const startTime = performance.now();
                 const newData = await api.getImageBatchAPI(imagesMissingInDB)//.slice(0, 30))
-                console.log('api.getImageBatchAPI', this.executionTime(startTime));
+                console.log('getImageBatchAPI', this.executionTime(startTime));
                 console.log(imagesMissingInDB)
                 resolve(newData)
             }
