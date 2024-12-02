@@ -64,6 +64,7 @@ export class ImageRenderer {
     createValidImageObjects = (data) => {
         return new Promise(async (resolve) => {
             try {
+                this.blobs[project] = []
                 const imageSort = data.sort((a, b) => a.score - b.score)
                 //.sort((a, b) => a.id - b.id)
                 for (const { blob, id, project, score, clr } of imageSort) {
