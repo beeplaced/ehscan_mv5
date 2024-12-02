@@ -7,24 +7,24 @@ const textToken = classMap.get('textToken');
 const svgInst = classMap.get('svgInst');
 const ImageData = classMap.get('ImageData');
 
-const ImageLoop = ({ project, projectFlow = false, edit = false }) => {
+const ImageLoop = forwardRef(({ projectFlow = false, edit = false }, ref) => {
   const navigate = useNavigate();
   const {message, sendMessage} = useWebSocket();
   const [selectedItems, setSelectedItems] = useState([]);
   const [itemsToSync, setItemsToSync] = useState([]);
   const [incompleteItems, setIncompleteItems] = useState([]);
   const [images, setImages] = useState([]);
-  const contentContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {// Load Initial
-    (async () => {
-      await ImageData.loadProjectImages(project)
-      const { blobs } = ImageData
-      const projectBlobs = blobs[project]
-      console.log(projectBlobs)
-      setImages(projectBlobs)
-    })();
+
+    setTimeout(() => {
+      console.log(ImageData.blobs.misc)
+      setImages(ImageData.blobs.misc)
+    }, 100); // Timeout in milliseconds
+    
+
 }, []);
+
 
 
   useEffect(() => {//CHANGES BY MESSAGE
@@ -70,9 +70,9 @@ const ImageLoop = ({ project, projectFlow = false, edit = false }) => {
       } catch (error) {
           console.error("Failed to parse settings from localStorage:", error);
       }
-      if (contentContainerRef.current) {
+      if (ref?.current) {
           const imageRepeat = settingsObj.imagerepeat ?? 4; // Fallback to 4 if imagerepeat is undefined or null
-          contentContainerRef.current.style.setProperty('--image-repeats', imageRepeat);
+          ref.current.style.setProperty('--image-repeats', imageRepeat);
       }
   }, [location]);
 
@@ -81,8 +81,8 @@ const ImageLoop = ({ project, projectFlow = false, edit = false }) => {
   }  
 
   useEffect(() => {//Click Stuff
-    if(!contentContainerRef.current) return
-    contentContainerRef.current.onclick = (e) => {
+    if(!ref?.current) return
+      ref.current.onclick = (e) => {
       const { dataset } = e?.target
         switch (true) {
             case dataset.imageIndex !== undefined: //Valid Image Clicked
@@ -109,7 +109,6 @@ const ImageLoop = ({ project, projectFlow = false, edit = false }) => {
 
 
   const imageInfo = () => {
-
     return (
       <>
       <div className="image-info">
@@ -133,7 +132,7 @@ let lastProject = ''
   const innerLoop = () => {
     return (
       <>
-        <div ref={contentContainerRef} className="image-content-grid">
+        <div ref={ref} className="image-content-grid">
         {images.map(({ imgBlob, id, project, score, clr, placeholder = false }) => {
           const isNewProject = project !== lastProject;
           lastProject = project;
@@ -182,6 +181,6 @@ return (
   { images.length === 0 ? ( <div className='no-results'>Nothing here yet, upload Image</div> ) : ( innerLoop() ) }
   </>
   );
-};
+});
 
 export default ImageLoop;
