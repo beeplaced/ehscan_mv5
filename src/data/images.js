@@ -64,20 +64,15 @@ export class ImageRenderer {
                 const promises = data
                 .sort((a, b) => a.score - b.score)
                 //.sort((a, b) => a.id - b.id)
-                .map(({ blob, id, project, score, clr }) => {
-                    if (!blob || !(blob instanceof Blob)) {
-                        alert(`Invalid blob for id ${id}`);
-                        return null; // Skip invalid blobs
-                    }
-                    const imgBlob = URL.createObjectURL(blob);
-                    
+                .map(async({ blob, id, project, score, clr }) => {
+                    const imgBlob = await this.createObjectURLAsync(blob)
                     return {
                         imgBlob,
                         id,
                         project,
                         ...(score !== undefined && { score }),
                         ...(clr !== undefined && { clr }),
-                        revokeUrl: () => URL.revokeObjectURL(imgBlob)
+                        revokeUrl: () => URL.revokeObjectURL(blob)
                     }
                 })
                 const images = (await Promise.all(promises)).filter(Boolean);
@@ -86,6 +81,20 @@ export class ImageRenderer {
                 // Alert the error
                 alert('An error occurred while rendering images: ' + error.message);
                 resolve(); // Optionally resolve with no images
+            }
+        });
+    };
+
+    createObjectURLAsync = (blob) => {
+        return new Promise((resolve, reject) => {
+            try {
+                if (!blob || !(blob instanceof Blob)) {
+                    throw new Error("Invalid blob provided");
+                }
+                const url = URL.createObjectURL(blob);
+                resolve(url);
+            } catch (error) {
+                reject(error);
             }
         });
     };
@@ -549,10 +558,10 @@ export class ImageRenderer {
         if (status === 201 && data === undefined) {//find first
             return { status: 204 } //not found
             // const first = await _storage.getFirstEntry()
-            // return this.returnImgFDromDB(first)
+            // return this.returnImgFromDB(first)
         }
         if (status !== 200) return
-        return this.returnImgFDromDB(data)
+        return this.returnImgFromDB(data)
     };
 
     findNextAndPrevIds = async (id) => {
@@ -567,7 +576,7 @@ export class ImageRenderer {
             return { status: 204 } //not found
         }
         if (status !== 200) return
-        return this.returnImgFDromDB(data[0])
+        return this.returnImgFromDB(data[0])
     };
 
     imgIDBySHA = async (sha) => {
@@ -582,7 +591,7 @@ export class ImageRenderer {
         return status === 200 ? data?.sha : undefined;
     };
 
-    returnImgFDromDB = (data) => {
+    returnImgFromDB = (data) => {
         const imgBlob = URL.createObjectURL(data.blob);
         const { sha, project, id } = data
         return { status: 200, imgBlob, sha, project, id }
