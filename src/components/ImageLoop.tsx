@@ -7,19 +7,18 @@ const textToken = classMap.get('textToken');
 const svgInst = classMap.get('svgInst');
 const ImageData = classMap.get('ImageData');
 
-const ImageLoop = forwardRef(({ projectFlow = false, edit = false }, ref) => {
+const ImageLoop = forwardRef(({ images, projectFlow = false, edit = false }, ref) => {
   const navigate = useNavigate();
   const {message, sendMessage} = useWebSocket();
   const [selectedItems, setSelectedItems] = useState([]);
   const [itemsToSync, setItemsToSync] = useState([]);
   const [incompleteItems, setIncompleteItems] = useState([]);
-  const [images, setImages] = useState([]);
 
+  
   useEffect(() => {// Load Initial
 
     setTimeout(() => {
       console.log(ImageData.blobs.misc)
-      setImages(ImageData.blobs.misc)
     }, 100); // Timeout in milliseconds
     
 

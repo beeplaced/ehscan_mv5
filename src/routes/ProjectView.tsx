@@ -28,6 +28,7 @@ import Loader from '../tools/Loader';
         const { blobs } = ImageData
         const projectBlobs = blobs[id]
         setPop(projectBlobs.length === 0)
+        setImages(projectBlobs);
         setTitle(id)
         localStorage.setItem('project', id )
         setLoading(false)
@@ -73,7 +74,9 @@ import Loader from '../tools/Loader';
       <div className="app-container-result result-page">
       <main ref={scrollRef} className={`content image-result ${!loading ? 'fade-in' : ''}`}>
           <div className='image-project-view'>
-          {<ImageLoop ref={contentContainerRef}/> }
+          {<ImageLoop
+          ref={contentContainerRef}
+          images={images}/> }
           </div>
       </main>
         {<ImageFooter edit={edit} project={title} handleFileInput={handleFileInput} pop={pop} showDialog={showDialog} setShowDialog={setShowDialog} /> }
