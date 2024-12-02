@@ -27,12 +27,19 @@ import Loader from '../tools/Loader';
         await ImageData.loadProjectImages(id)
         const { blobs } = ImageData
         const projectBlobs = blobs[id]
-        setPop(projectBlobs.length === 0)
+
         setImages(projectBlobs);
-        setTitle(id)
-        localStorage.setItem('project', id )
+
+
+        setPop(projectBlobs.length === 0)
         setLoading(false)
       })();
+
+      requestAnimationFrame(() => {//Loading complete
+        localStorage.setItem('project', id )
+        setTitle(id)
+      })
+
   }, [id]);
 
     useEffect(() => { // Cleanup on unmount
