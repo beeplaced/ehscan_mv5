@@ -31,7 +31,7 @@ export class ImageRenderer {
                     this.ReloadImagesFromServer(project)
                     resolve(true)
                 }
-                if (!this.blobs[project] || this.blobs[project].length !== amount) await this.createValidImageObjects(data);
+                if (!this.blobs[project] || this.blobs[project].length !== amount) await this.createValidImageObjects(data, project);
                 console.log('create Blobs:', this.executionTime(startTime));
                 resolve(true)
             } catch (error) {
@@ -56,12 +56,12 @@ export class ImageRenderer {
         // console.log('loadProjectImages', this.executionTime(startTime));     
         // console.log(output)
         startTime = performance.now();
-        const res = await this.createValidImageObjects(output.data)
+        const res = await this.createValidImageObjects(output.data, project)
         console.log('create Blobs:', this.executionTime(startTime));
         return res
     }
 
-    createValidImageObjects = (data) => {
+    createValidImageObjects = (data,project) => {
         return new Promise(async (resolve) => {
             try {
                 this.blobs[project] = []
