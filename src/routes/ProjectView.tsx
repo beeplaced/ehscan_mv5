@@ -21,7 +21,7 @@ import Loader from '../tools/Loader';
   const [edit, setEdit] = useState(false);
   const [images, setImages] = useState([]);
   
-  useEffect(() => {//Load Initial
+  useEffect(() => {// Load Initial
       (async () => {
         setLoading(true)
         localStorage.setItem('project', id )
@@ -32,6 +32,17 @@ import Loader from '../tools/Loader';
         setLoading(false)
       })();
   }, [id]);
+
+    useEffect(() => { // Cleanup on unmount
+      return () => {
+        images.forEach(image => {
+          if (image.revokeUrl) {
+              image.revokeUrl();
+              console.log(`Revoked URL for image ID ${image.id}`);
+          }
+      });
+    };
+  }, [images]);
 
   const handleFileInput = async (e) => {
     const selectedFiles = e.target.files

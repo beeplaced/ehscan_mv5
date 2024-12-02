@@ -69,12 +69,15 @@ export class ImageRenderer {
                         alert(`Invalid blob for id ${id}`);
                         return null; // Skip invalid blobs
                     }
+                    const imgBlob = URL.createObjectURL(blob);
+                    
                     return {
-                        imgBlob: URL.createObjectURL(blob),
+                        imgBlob,
                         id,
                         project,
                         ...(score !== undefined && { score }),
                         ...(clr !== undefined && { clr }),
+                        revokeUrl: () => URL.revokeObjectURL(imgBlob)
                     }
                 })
                 const images = (await Promise.all(promises)).filter(Boolean);
