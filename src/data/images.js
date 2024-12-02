@@ -25,7 +25,7 @@ export class ImageRenderer {
             const amount = await api.getProjectImageAmount(project); //checkServerImagesAmount
             const output = await _storage.getData({ value: project, field: 'project' });
             const { status, data } = output
-            if (status !== 200) throw new Error("Something wne twrong with inner DB");
+            if (status !== 200) throw new Error("Something went wrong with inner DB");
             if (data.length === 0 || data.length !== amount) { //Empty DB
                 return this.ReloadImagesFromServer(project)
             }
@@ -61,7 +61,7 @@ export class ImageRenderer {
     createValidImageObjects = (data) => {
         return new Promise(async (resolve) => {
             try {
-                const images = data
+                const promises = data
                 .sort((a, b) => a.score - b.score)
                 //.sort((a, b) => a.id - b.id)
                 .map(({ blob, id, project, score, clr }) => {
@@ -76,7 +76,8 @@ export class ImageRenderer {
                         ...(score !== undefined && { score }),
                         ...(clr !== undefined && { clr }),
                     }
-                }).filter(Boolean); // Remove any null values
+                })
+                const images = (await Promise.all(promises)).filter(Boolean);
                 resolve(images);
             } catch (error) {
                 // Alert the error
