@@ -12,14 +12,12 @@ import Loader from '../tools/Loader';
 //const ProjectView: React.FC = () => {
   const ProjectView = () => {
   const { id } = useParams<{ id: string }>(); // Access the id parameter
-  const contentContainerRef = useRef<HTMLDivElement>(null);
   const [title, setTitle] = useState('');
   const [scrollDownTrigger, setScrollDownTrigger] = useState(false);
   const { scrollRef, isAtTop } = useScrollListener({ scrollDown: true, scrollDownTrigger });
   const [loading, setLoading] = useState(false);
   const [pop, setPop] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [images, setImages] = useState([]);
   
   useEffect(() => {// Load Initial
       (async () => {
@@ -27,10 +25,6 @@ import Loader from '../tools/Loader';
         await ImageData.loadProjectImages(id)
         const { blobs } = ImageData
         const projectBlobs = blobs[id]
-
-        setImages(projectBlobs);
-
-
         setPop(projectBlobs.length === 0)
         setLoading(false)
       })();
@@ -42,15 +36,6 @@ import Loader from '../tools/Loader';
 
   }, [id]);
 
-    useEffect(() => { // Cleanup on unmount
-      return () => {
-        images.forEach(image => {
-          if (image.revokeUrl) {
-              image.revokeUrl();
-          }
-      });
-    };
-  }, [images]);
 
   const handleFileInput = async (e) => {
     const selectedFiles = e.target.files
@@ -82,8 +67,8 @@ import Loader from '../tools/Loader';
       <main ref={scrollRef} className={`content image-result ${!loading ? 'fade-in' : ''}`}>
           <div className='image-project-view'>
           {<ImageLoop
-          ref={contentContainerRef}
-          images={images}/> }
+
+          project={id}/> }
           </div>
       </main>
         {<ImageFooter edit={edit} project={title} handleFileInput={handleFileInput} pop={pop} showDialog={showDialog} setShowDialog={setShowDialog} /> }
