@@ -9,7 +9,7 @@ const currentDate = new Date().toISOString().split('T')[0]; // Gets the current 
 export class ImageRenderer {
 
     constructor() {
-        this.blobs = []
+        this.blobs = {}
         this.projectOrder = []
         this.imagesPaginationLeft = []
         this.projectInner = '' //Image Container
@@ -20,21 +20,24 @@ export class ImageRenderer {
     }
 
     loadProjectImages = async (project) => {
-        try {
-            let startTime = performance.now();
-            const amount = await api.getProjectImageAmount(project); //checkServerImagesAmount
-            const output = await _storage.getData({ value: project, field: 'project' });
-            const { status, data } = output
-            if (status !== 200) throw new Error("Something went wrong with inner DB");
-            if (data.length === 0 || data.length !== amount) { //Empty DB
-                return this.ReloadImagesFromServer(project)
+        return new Promise(async (resolve) => {
+            try {
+                let startTime = performance.now();
+                const amount = await api.getProjectImageAmount(project); //checkServerImagesAmount
+                const output = await _storage.getData({ value: project, field: 'project' });
+                const { status, data } = output
+                if (status !== 200) throw new Error("Something went wrong with inner DB");
+                if (data.length === 0 || data.length !== amount) { //Empty DB
+                    this.ReloadImagesFromServer(project)
+                    resolve(true)
+                }
+                if (!this.blobs[project] || this.blobs[project].length !== amount) await this.createValidImageObjects(data);
+                console.log('create Blobs:', this.executionTime(startTime));
+                resolve(true)
+            } catch (error) {
+                console.log(error)
             }
-            const res = await this.createValidImageObjects(data);
-            console.log('create Blobs:', this.executionTime(startTime));
-            return res
-        } catch (error) {
-            console.log(error)
-        }
+        })
     }
 
     ReloadImagesFromServer = async (project) => {
@@ -61,22 +64,21 @@ export class ImageRenderer {
     createValidImageObjects = (data) => {
         return new Promise(async (resolve) => {
             try {
-                const promises = data
-                .sort((a, b) => a.score - b.score)
+                const imageSort = data.sort((a, b) => a.score - b.score)
                 //.sort((a, b) => a.id - b.id)
-                .map(async({ blob, id, project, score, clr }) => {
+                for (const { blob, id, project, score, clr } of imageSort) {
                     const imgBlob = await this.createObjectURLAsync(blob)
-                    return {
+                    if (!this.blobs[project]) this.blobs[project] = []
+                    this.blobs[project].push({
                         imgBlob,
                         id,
                         project,
                         ...(score !== undefined && { score }),
                         ...(clr !== undefined && { clr }),
                         revokeUrl: () => URL.revokeObjectURL(blob)
-                    }
-                })
-                const images = (await Promise.all(promises)).filter(Boolean);
-                resolve(images);
+                    })
+                }
+                resolve(true)
             } catch (error) {
                 // Alert the error
                 alert('An error occurred while rendering images: ' + error.message);

@@ -24,11 +24,13 @@ import Loader from '../tools/Loader';
   useEffect(() => {// Load Initial
       (async () => {
         setLoading(true)
-        localStorage.setItem('project', id )
-        const blobs = await ImageData.loadProjectImages(id)
-        setPop(blobs.length === 0)
-        setImages(blobs);
+        await ImageData.loadProjectImages(id)
+        const { blobs } = ImageData
+        const projectBlobs = blobs[id]
+        setPop(projectBlobs.length === 0)
+        setImages(projectBlobs);
         setTitle(id)
+        localStorage.setItem('project', id )
         setLoading(false)
       })();
   }, [id]);
@@ -38,7 +40,6 @@ import Loader from '../tools/Loader';
         images.forEach(image => {
           if (image.revokeUrl) {
               image.revokeUrl();
-              console.log(`Revoked URL for image ID ${image.id}`);
           }
       });
     };
@@ -67,11 +68,7 @@ import Loader from '../tools/Loader';
 
   return (
     <>
-    <MainHeader 
-    isAtTop={isAtTop} 
-    title={title}
-    setShowDialog={setShowDialog}  
-    />
+    <MainHeader isAtTop={isAtTop} title={title} setShowDialog={setShowDialog}  />
     {loading && ( <Loader /> )}
       <>
       <div className="app-container-result result-page">
@@ -82,14 +79,7 @@ import Loader from '../tools/Loader';
           images={images}/> }
           </div>
       </main>
-        {<ImageFooter 
-        edit={edit} 
-        project={title} 
-        handleFileInput={handleFileInput} 
-        pop={pop}
-        showDialog={showDialog}
-        setShowDialog={setShowDialog}       
-        /> }
+        {<ImageFooter edit={edit} project={title} handleFileInput={handleFileInput} pop={pop} showDialog={showDialog} setShowDialog={setShowDialog} /> }
       </div>
       </>
 
