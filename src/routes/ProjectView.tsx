@@ -25,9 +25,9 @@ import Loader from '../tools/Loader';
       (async () => {
         setLoading(true)
         const storage = await navigator.storage?.estimate();
-        alert(storage.usage);
+        console.log('Storage usage:', storage.usage);
         console.log('Storage quota:', storage.quota);
-        alert(window.indexedDB)
+        console.log(window.indexedDB)
         //await ImageData.loadProjectImages(id)
         const res = await ImageData.loadImageSequence(id)
         const { blobs } = ImageData

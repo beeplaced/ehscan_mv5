@@ -179,7 +179,6 @@ export class API {
         storeData.score = score || 0
         storeData.clr = score ? getHazardRangeColor(score).bck_color : ''
         const store = await _storage.storeData(storeData);
-        
         if (store.status === 201) return await _storage.updateData(storeData);
         return store
     };
