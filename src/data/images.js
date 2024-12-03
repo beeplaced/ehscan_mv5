@@ -380,7 +380,6 @@ export class ImageRenderer {
 
     addImages = async (fileList) => {
         const blobs = [];
-        console.log(this.blobs.length)
         await Promise.all(Array.from(fileList).map(async (file) => {
             try {
                 const preparedFile = await this.prepareFile(file);
@@ -400,13 +399,11 @@ export class ImageRenderer {
                 console.error("Error in processing file:", file.name, error);
             }
         }));
-        console.log(this.blobs.length)
         return blobs;
     }
 
     sendImages = async (fileList) => {
         const blobs = [];
-        console.log(this.blobs.length)
         await Promise.all(Array.from(fileList).map(async (file) => {
             try {
                 const preparedFile = await this.prepareFile(file);
@@ -426,7 +423,6 @@ export class ImageRenderer {
                 console.error("Error in processing file:", file.name, error);
             }
         }));
-        console.log(this.blobs.length)
         return blobs;
     }
 

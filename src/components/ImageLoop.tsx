@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, forwardRef  } from 'react';
+import React, { useRef, useEffect, useState  } from 'react';
 import ProjectRoute from '../components/ProjectRoute';
 import { useNavigate } from 'react-router-dom';
 import { useWebSocket } from '../tools/WebSocketContext';
@@ -7,25 +7,14 @@ const textToken = classMap.get('textToken');
 const svgInst = classMap.get('svgInst');
 const ImageData = classMap.get('ImageData');
 
-const ImageLoop = forwardRef(({ images, projectFlow = false, edit = false }, ref) => {
+const ImageLoop = (({ images, projectFlow = false, edit = false }) => {
   const navigate = useNavigate();
   const {message, sendMessage} = useWebSocket();
   const [selectedItems, setSelectedItems] = useState([]);
   const [itemsToSync, setItemsToSync] = useState([]);
   const [incompleteItems, setIncompleteItems] = useState([]);
-
+  const contentContainerRef = useRef<HTMLDivElement>(null);
   
-  useEffect(() => {// Load Initial
-
-    setTimeout(() => {
-      console.log(ImageData.blobs.misc)
-    }, 100); // Timeout in milliseconds
-    
-
-}, []);
-
-
-
   useEffect(() => {//CHANGES BY MESSAGE
     if (!message || message.length === 0) return
 
@@ -69,9 +58,9 @@ const ImageLoop = forwardRef(({ images, projectFlow = false, edit = false }, ref
       } catch (error) {
           console.error("Failed to parse settings from localStorage:", error);
       }
-      if (ref?.current) {
+      if (contentContainerRef?.current) {
           const imageRepeat = settingsObj.imagerepeat ?? 4; // Fallback to 4 if imagerepeat is undefined or null
-          ref.current.style.setProperty('--image-repeats', imageRepeat);
+          contentContainerRef.current.style.setProperty('--image-repeats', imageRepeat);
       }
   }, [location]);
 
@@ -80,12 +69,11 @@ const ImageLoop = forwardRef(({ images, projectFlow = false, edit = false }, ref
   }  
 
   useEffect(() => {//Click Stuff
-    if(!ref?.current) return
-      ref.current.onclick = (e) => {
+    if(!contentContainerRef?.current) return
+    contentContainerRef.current.onclick = (e) => {
       const { dataset } = e?.target
         switch (true) {
             case dataset.imageIndex !== undefined: //Valid Image Clicked
-            console.log(edit)
                 const imageID = parseInt(dataset.imageIndex)
                 if (edit){
                   setSelectedItems((prevSyncItems) => [...new Set([...prevSyncItems, imageID])]);//add
@@ -128,10 +116,9 @@ const ImageLoop = forwardRef(({ images, projectFlow = false, edit = false }, ref
 
 let lastProject = ''
 
-  const innerLoop = () => {
     return (
       <>
-        <div ref={ref} className="image-content-grid">
+        <div ref={contentContainerRef} className="image-content-grid">
         {images.map(({ imgBlob, id, project, score, clr, placeholder = false }) => {
           const isNewProject = project !== lastProject;
           lastProject = project;
@@ -168,18 +155,8 @@ let lastProject = ''
         })}
           {imageInfo()}
         </div>
-
-
       </>
     );
-  };
-
-
-return (
-  <>
-  { images.length === 0 ? ( <div className='no-results'>Nothing here yet, upload Image</div> ) : ( innerLoop() ) }
-  </>
-  );
 });
 
 export default ImageLoop;

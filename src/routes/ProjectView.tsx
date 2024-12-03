@@ -12,7 +12,6 @@ import Loader from '../tools/Loader';
 //const ProjectView: React.FC = () => {
   const ProjectView = () => {
   const { id } = useParams<{ id: string }>(); // Access the id parameter
-  const contentContainerRef = useRef<HTMLDivElement>(null);
   const [title, setTitle] = useState('');
   const [scrollDownTrigger, setScrollDownTrigger] = useState(false);
   const { scrollRef, isAtTop } = useScrollListener({ scrollDown: true, scrollDownTrigger });
@@ -22,17 +21,20 @@ import Loader from '../tools/Loader';
   const [images, setImages] = useState([]);
   
   useEffect(() => {// Load Initial
+
       (async () => {
         setLoading(true)
-        await ImageData.loadProjectImages(id)
+        //await ImageData.loadProjectImages(id)
+        await ImageData.ReloadImagesFromServer(id)
         const { blobs } = ImageData
         const projectBlobs = blobs[id]
+        setImages(projectBlobs)  
         setPop(projectBlobs.length === 0)
-        setImages(projectBlobs);
         setTitle(id)
         localStorage.setItem('project', id )
         setLoading(false)
       })();
+      console.log('again')
   }, [id]);
 
     useEffect(() => { // Cleanup on unmount
@@ -74,9 +76,15 @@ import Loader from '../tools/Loader';
       <div className="app-container-result result-page">
       <main ref={scrollRef} className={`content image-result ${!loading ? 'fade-in' : ''}`}>
           <div className='image-project-view'>
+          { images.length === 0 ? ( <div className='no-results'>Nothing here yet, upload Image</div> ) : (  
+          <>
           {<ImageLoop
-          ref={contentContainerRef}
-          images={images}/> }
+          loading={loading}
+          images={images}
+          setImages={setImages}
+          /> }
+          </>
+        ) }
           </div>
       </main>
         {<ImageFooter edit={edit} project={title} handleFileInput={handleFileInput} pop={pop} showDialog={showDialog} setShowDialog={setShowDialog} /> }
