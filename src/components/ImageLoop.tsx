@@ -136,7 +136,6 @@ let lastProject = ''
                 data-title={project || undefined}>
                 {!placeholder && (
                   <img
-                    loading="lazy"
                     className={incompleteItems.includes(id) ? 'imgD missing' : 'imgD'}
                     src={imgBlob}
                     alt="image"

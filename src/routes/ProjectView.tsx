@@ -28,10 +28,7 @@ import Loader from '../tools/Loader';
         await ImageData.JustImagesFromDB(id)
         const { blobs } = ImageData
         const projectBlobs = blobs[id]
-        setTimeout(() => {
-          setImages(projectBlobs)  
-        }, 500);
-
+        setImages(projectBlobs)  
         setPop(projectBlobs.length === 0)
         setTitle(id)
         localStorage.setItem('project', id )
