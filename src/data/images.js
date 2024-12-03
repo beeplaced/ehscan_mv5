@@ -42,7 +42,7 @@ export class ImageRenderer {
 
     JustImagesFromDB = async (project) => {
         const { data } = await _storage.getData({ value: project, field: 'project' });
-        await this.createValidImageObjects(data, project)
+        return await this.createValidImageObjects(data, project)
 
     }
 
@@ -78,6 +78,7 @@ export class ImageRenderer {
                     if (!this.blobs[project]) this.blobs[project] = []
                     this.blobs[project].push({
                         imgBlob,
+                        blob,
                         id,
                         project,
                         ...(score !== undefined && { score }),

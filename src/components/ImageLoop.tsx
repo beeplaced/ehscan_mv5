@@ -119,7 +119,7 @@ let lastProject = ''
     return (
       <>
         <div ref={contentContainerRef} className="image-content-grid">
-        {images.map(({ imgBlob, id, project, score, clr, placeholder = false }) => {
+        {images.map(({ blob, id, project, score, clr, placeholder = false }) => {
           const isNewProject = project !== lastProject;
           lastProject = project;
           return (
@@ -135,7 +135,7 @@ let lastProject = ''
                   <img
                     loading="lazy"
                     className={incompleteItems.includes(id) ? 'imgD missing' : 'imgD'}
-                    src={imgBlob}
+                    src={URL.createObjectURL(blob)}
                     alt="image"
                   />
                 )}
