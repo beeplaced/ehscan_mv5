@@ -92,6 +92,7 @@ export class ImageRenderer {
         return new Promise((resolve, reject) => {
             try {
                 if (!blob || !(blob instanceof Blob)) {
+                    alert('error')
                     throw new Error("Invalid blob provided");
                 }
                 const url = URL.createObjectURL(blob);
