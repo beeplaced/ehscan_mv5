@@ -25,12 +25,12 @@ export class ImageRenderer {
             let startTime = performance.now();
             //CHECK LAST TIMESTAMP
             //Will be higher if new image is added or deleted
-            let allImages 
-            const output = await _storage.getData({ value: project, field: 'project' });
-            console.log(output)
-            allImages = output.data
-            //const allAPI = await api.getProjectImageInfo(project) //load project from DB
-            const APIDATA = await api.getImageBatchAPI(allImages)
+            // let allImages 
+            // const output = await _storage.getData({ value: project, field: 'project' });
+            // console.log(output)
+            // allImages = output.data
+            const allAPI = await api.getProjectImageInfo(project) //load project from DB
+            const APIDATA = await api.getImageBatchAPI(allAPI)
             console.log(APIDATA)
             console.log('create Blobs:', this.executionTime(startTime));
             resolve(APIDATA)
