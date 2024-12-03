@@ -25,7 +25,7 @@ import Loader from '../tools/Loader';
       (async () => {
         setLoading(true)
         //await ImageData.loadProjectImages(id)
-        const res = await ImageData.JustImagesFromDB(id)
+        const res = await ImageData.loadImageSequence(id)
         const { blobs } = ImageData
         setImages(res)  
         setPop(res.length === 0)

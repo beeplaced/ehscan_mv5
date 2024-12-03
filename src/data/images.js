@@ -19,6 +19,22 @@ export class ImageRenderer {
         this.searchProject = localStorage.getItem('searchProject') || ''
     }
 
+    loadImageSequence = async (project) => {
+        return new Promise(async (resolve) => {
+        try{
+            let startTime = performance.now();
+            const amount = await api.getProjectImageAmount(project); //checkServerImagesAmount
+
+            const { data } = await _storage.getData({ value: project, field: 'project' });
+            return await this.createValidImageObjects(data, project)
+
+            console.log('create Blobs:', this.executionTime(startTime));
+        } catch (error) {
+            console.log(error)
+        }
+        })
+    }
+
     loadProjectImages = async (project) => {
         return new Promise(async (resolve) => {
             try {
@@ -41,12 +57,10 @@ export class ImageRenderer {
     }
 
     JustImagesFromDB = async (project) => {
-
         const allAPI = await api.getProjectImageInfo(project) //load project from DB
         await this.addMissingDatainDB(allAPI); 
         const { data } = await _storage.getData({ value: project, field: 'project' });
         return await this.createValidImageObjects(data, project)
-
     }
 
     ReloadImagesFromServer = async (project) => {
