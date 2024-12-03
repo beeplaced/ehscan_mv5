@@ -157,7 +157,7 @@ export class API {
         }
     };
 
-    getImageBatchAPI = async (allAPI) => {//Load Images from DB and Store blob and meta in indexedb
+    getImageBatchAPIx = async (allAPI) => {//Load Images from DB and Store blob and meta in indexedb
         const imagePromises = allAPI.map(async ({ sha, project, score }) => {
             const headers = { sha, tenant } 
             const response = await fetch(`${gatewayUrl}/images-renderer`, { headers });
@@ -168,11 +168,47 @@ export class API {
         return await Promise.all(imagePromises);// return urls
     };
 
+    getImageBatchAPI = async (allAPI) => {
+
+        const imagePromises = allAPI.map(async ({ sha, project, score }) => {
+          const headers = { sha, tenant };
+          if ('caches' in window) {
+            const cache = await caches.open('api-image-cache-v1'); // Open the cache used by the service worker
+            const imageUrl = `${gatewayUrl}/images-renderer?sha=${sha}`; 
+                const cachedResponse = await cache.match(imageUrl);
+                if (cachedResponse) {
+                  // If the image is found in cache, create an Object URL from the blob
+                  const blob = await cachedResponse.blob();
+                  const { data, status } = await _storage.getData({ value: sha });
+                  const {project, score, id, clr} = data[0]
+                  return { blob, project, score, id, clr }
+                }
+            }
+          // Fetch the image as a blob from your API endpoint
+          const response = await fetch(`${gatewayUrl}/images-renderer`, { headers });
+          const blob = await response.blob();
+          const store = await this.storeImageDB({ sha, project, score });
+          await this.storeImageInCache(sha, blob);
+          return { blob, project, store };
+        });
+      
+        return await Promise.all(imagePromises); // Return results (blobs and store metadata)
+      };
+
+      storeImageInCache = async (sha, blob) => {
+        const cache = await caches.open('api-image-cache-v1'); // Name of your cache
+      
+        // Create a URL for the image blob (or use sha as the cache key)
+        const imageURL = `${gatewayUrl}/images-renderer?sha=${sha}`;
+      
+        // Ensure the image is cached with its sha as the key
+        await cache.put(imageURL, new Response(blob, { status: 200, statusText: 'OK' }));
+      };
+
     storeImageDB = async (entry) => {
-        const { sha, blob, project, score } = entry
+        const { sha, project, score } = entry
         const storeData = {
             sha,
-            blob,
             date: currentDate,
             project: project
         };

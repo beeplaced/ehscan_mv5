@@ -5,7 +5,7 @@ import { API } from './API.js'; const api = new API();
 const currentDate = new Date().toISOString().split('T')[0]; // Gets the current date in 'YYYY-MM-DD' format
 // import ZT from '../webComponents/zTime.js'
 // const zTime = new ZT()
-
+const gatewayUrl = window.location.hostname === 'localhost' ? process.env.GATEWAY_LOCAL : process.env.GATEWAY
 export class ImageRenderer {
 
     constructor() {
@@ -23,18 +23,75 @@ export class ImageRenderer {
         return new Promise(async (resolve) => {
         try{
             let startTime = performance.now();
-            const allAPI = await api.getProjectImageInfo(project) //load project from DB
-
-            await this.addMissingDatainDB(allAPI); 
-            const { data } = await _storage.getData({ value: project, field: 'project' });
-            const res = await this.createValidImageObjects(data, project)
+            //CHECK LAST TIMESTAMP
+            //Will be higher if new image is added or deleted
+            let allImages 
+            const output = await _storage.getData({ value: project, field: 'project' });
+            console.log(output)
+            allImages = output.data
+            //const allAPI = await api.getProjectImageInfo(project) //load project from DB
+            const APIDATA = await api.getImageBatchAPI(allImages)
+            console.log(APIDATA)
             console.log('create Blobs:', this.executionTime(startTime));
-            resolve(res)
+            resolve(APIDATA)
         } catch (error) {
             console.log(error)
         }
         })
     }
+
+    imgByID = async (id) => {
+        return new Promise(async (resolve) => {
+            try {
+        const value = parseInt(id)
+        const field = "id"
+        const { data, status } = await _storage.getData({ value, field })
+        const { sha } = data
+        console.log(data, id, status)
+        if (status === 201 && data === undefined) {//find first
+            return { status: 204 } //not found
+            // const first = await _storage.getFirstEntry()
+            // return this.returnImgFromDB(first)
+        }
+        if (status !== 200) return
+
+
+        const APIDATA = await api.getImageBatchAPI([data])
+        console.log(APIDATA)
+        resolve({...APIDATA[0], sha})
+        } catch (error) {
+            console.log(error)
+        }
+        })
+    };
+
+    createValidImageObjects = (data, project) => {
+        return new Promise(async (resolve) => {
+            try {
+                this.blobs[project] = []
+                const res = []
+                const imageSort = data.sort((a, b) => a.score - b.score)
+                //.sort((a, b) => a.id - b.id)
+                for (const { sha, blob, id, project, score, clr } of imageSort) {
+                    const imgBlob = await this.createObjectURLAsync(blob)
+                    if (!this.blobs[project]) this.blobs[project] = []
+                    res.push({
+                        imgBlob,
+                        id,
+                        project,
+                        ...(score !== undefined && { score }),
+                        ...(clr !== undefined && { clr }),
+                        revokeUrl: () => URL.revokeObjectURL(blob)
+                    })
+                }
+                resolve(res)
+            } catch (error) {
+                // Alert the error
+                alert('An error occurred while rendering images: ' + error.message);
+                resolve(); // Optionally resolve with no images
+            }
+        });
+    };
 
     loadProjectImages = async (project) => {
         return new Promise(async (resolve) => {
@@ -84,34 +141,6 @@ export class ImageRenderer {
         console.log('create Blobs:', this.executionTime(startTime));
         return res
     }
-
-    createValidImageObjects = (data,project) => {
-        return new Promise(async (resolve) => {
-            try {
-                this.blobs[project] = []
-                const res = []
-                const imageSort = data.sort((a, b) => a.score - b.score)
-                //.sort((a, b) => a.id - b.id)
-                for (const { blob, id, project, score, clr } of imageSort) {
-                    //const imgBlob = await this.createObjectURLAsync(blob)
-                    if (!this.blobs[project]) this.blobs[project] = []
-                    res.push({
-                        blob,
-                        id,
-                        project,
-                        ...(score !== undefined && { score }),
-                        ...(clr !== undefined && { clr }),
-                        revokeUrl: () => URL.revokeObjectURL(blob)
-                    })
-                }
-                resolve(res)
-            } catch (error) {
-                // Alert the error
-                alert('An error occurred while rendering images: ' + error.message);
-                resolve(); // Optionally resolve with no images
-            }
-        });
-    };
 
     createObjectURLAsync = (blob) => {
         return new Promise((resolve, reject) => {
@@ -575,19 +604,7 @@ export class ImageRenderer {
     //     }
     // };
 
-    imgByID = async (id) => {
-        const value = parseInt(id)
-        const field = "id"
-        const { data, status } = await _storage.getData({ value, field })
-        // console.log(data, id, status)
-        if (status === 201 && data === undefined) {//find first
-            return { status: 204 } //not found
-            // const first = await _storage.getFirstEntry()
-            // return this.returnImgFromDB(first)
-        }
-        if (status !== 200) return
-        return this.returnImgFromDB(data)
-    };
+
 
     findNextAndPrevIds = async (id) => {
         const value = parseInt(id)

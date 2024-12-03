@@ -1,4 +1,5 @@
 const CACHE_NAME = 'my-app-cache-v1.17'; // Update version when there are changes
+const IMAGE_CACHE_NAME = 'api-image-cache-v1'; // Cache name
 const ASSETS_TO_CACHE = [
     '/',
     '/index.html'
@@ -27,6 +28,11 @@ self.addEventListener('install', event => {// Cache on install
 
 self.addEventListener('fetch', event => {
     const ReqUrl = event.request.url
+
+    if (ReqUrl.includes('/images-renderer')) {
+        event.respondWith(handleImageRequest(event.request));
+    }else{
+
     const shouldCache = cacheFiles.some(extension => ReqUrl.endsWith(extension)) 
     || ReqUrl.includes('vite')
     // || ReqUrl.includes('images.js');
@@ -55,7 +61,32 @@ self.addEventListener('fetch', event => {
         return networkResponse;
       })
     );
+}
 });
+
+
+// Function to handle image requests: storing and serving images from cache
+async function handleImageRequest(request) {
+    const cache = await caches.open(IMAGE_CACHE_NAME);
+  
+    // Check if the image is in the cache
+    const cachedResponse = await cache.match(request.url);
+    if (cachedResponse) {
+      // Return the cached image if it exists
+      return cachedResponse;
+    }
+  
+    // If not found in cache, fetch from the network
+    const networkResponse = await fetch(request);
+  
+    // Only cache the image if it's a valid response
+    if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+      cache.put(request.url, networkResponse.clone()); // Cache the image for future use
+    }
+  
+    return networkResponse; // Return the network response (image)
+  }
+
 
 self.addEventListener('activate', event => {// Handle version updates by deleting old caches
     console.log('activate')

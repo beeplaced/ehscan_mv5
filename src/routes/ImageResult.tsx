@@ -73,8 +73,8 @@ const ImageResult: React.FC = () => {
       const res = await ImageData.imgByID(id)
       if (res.status === 204) return
       setElements(true)
-      const{ imgBlob, sha, project } = res
-      setImage({ imgBlob, sha })
+      const { blob, sha, project } = res
+      setImage({ blob, sha })
       setInputSha(sha)
       setproject(project)
 
@@ -216,7 +216,7 @@ const ImageResult: React.FC = () => {
                         {mainTitle()}
                         <div className='image-result-box-image'>
                           {image && (
-                            <img src={image.imgBlob} alt="image" data-sha={image.sha} />
+                            <img src={URL.createObjectURL(image.blob)} alt="image" data-sha={image.sha} />
                           )}
                         </div>
                           {outputHazards && outputHazards.length > 0 ? (
