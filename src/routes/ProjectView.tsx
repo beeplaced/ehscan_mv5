@@ -25,11 +25,10 @@ import Loader from '../tools/Loader';
       (async () => {
         setLoading(true)
         //await ImageData.loadProjectImages(id)
-        await ImageData.JustImagesFromDB(id)
+        const res = await ImageData.JustImagesFromDB(id)
         const { blobs } = ImageData
-        const projectBlobs = blobs[id]
-        setImages(projectBlobs)  
-        setPop(projectBlobs.length === 0)
+        setImages(res)  
+        setPop(res.length === 0)
         setTitle(id)
         localStorage.setItem('project', id )
         setLoading(false)

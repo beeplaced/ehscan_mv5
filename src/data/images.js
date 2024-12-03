@@ -71,13 +71,13 @@ export class ImageRenderer {
         return new Promise(async (resolve) => {
             try {
                 this.blobs[project] = []
+                const res = []
                 const imageSort = data.sort((a, b) => a.score - b.score)
                 //.sort((a, b) => a.id - b.id)
                 for (const { blob, id, project, score, clr } of imageSort) {
-                    const imgBlob = await this.createObjectURLAsync(blob)
+                    //const imgBlob = await this.createObjectURLAsync(blob)
                     if (!this.blobs[project]) this.blobs[project] = []
-                    this.blobs[project].push({
-                        imgBlob,
+                    res.push({
                         blob,
                         id,
                         project,
@@ -86,7 +86,7 @@ export class ImageRenderer {
                         revokeUrl: () => URL.revokeObjectURL(blob)
                     })
                 }
-                resolve(true)
+                resolve(res)
             } catch (error) {
                 // Alert the error
                 alert('An error occurred while rendering images: ' + error.message);
