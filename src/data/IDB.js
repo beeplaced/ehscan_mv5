@@ -68,6 +68,7 @@ export class IndexedDB {
     }
 
     openDatabase = async () => {
+
         return new Promise((resolve, reject) => {
             const request = indexedDB.open(this.dbName, this.dbVersion);
             // request.onupgradeneeded = (event) => {
