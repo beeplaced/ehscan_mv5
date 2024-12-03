@@ -24,8 +24,13 @@ export class ImageRenderer {
         try{
             let startTime = performance.now();
             const amount = await api.getProjectImageAmount(project); //checkServerImagesAmount
+            
+            const allAPI = await api.getProjectImageInfo(project) //load project from DB
+
+            await this.addMissingDatainDB(allAPI); 
 
             const { data } = await _storage.getData({ value: project, field: 'project' });
+
             const res = await this.createValidImageObjects(data, project)
 
             console.log('create Blobs:', this.executionTime(startTime));
