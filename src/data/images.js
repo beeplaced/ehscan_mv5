@@ -24,7 +24,7 @@ export class ImageRenderer {
         try{
             let startTime = performance.now();
             const amount = await api.getProjectImageAmount(project); //checkServerImagesAmount
-            
+
             const allAPI = await api.getProjectImageInfo(project) //load project from DB
 
             await this.addMissingDatainDB(allAPI); 

@@ -7,7 +7,6 @@ import { IndexedDB } from './IDB.js'; const _storage = new IndexedDB();
 const tenant = localStorage.getItem('tenant');
 import { getHazardRangeColor } from '../data/levels.js';
 
-
 export class API {
 
     getProjectOverview = async () => {//get all for now
@@ -180,6 +179,7 @@ export class API {
         storeData.score = score || 0
         storeData.clr = score ? getHazardRangeColor(score).bck_color : ''
         const store = await _storage.storeData(storeData);
+        
         if (store.status === 201) return await _storage.updateData(storeData);
         return store
     };

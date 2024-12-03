@@ -396,6 +396,7 @@ export class IndexedDB {
     }
 
     updateData = async (newData) => {
+        alert('update')
         const db = await this.dbPromise;
         return new Promise((resolve, reject) => {
 
@@ -415,9 +416,7 @@ export class IndexedDB {
                     resolve({ status: 204, message: 'equal data already exists' })
                     return
                 }
-
                 if (existingData) {
-                    
                     const mergedData = {
                         ...existingData, // Spread existingData
                         ...newData, // Spread newData (overwrites existing keys)
