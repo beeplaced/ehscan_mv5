@@ -29,7 +29,8 @@ self.addEventListener('install', event => {// Cache on install
 self.addEventListener('fetch', event => {
     const ReqUrl = event.request.url
 
-    if (ReqUrl.includes('/images-renderer')) {
+    if (ReqUrl.includes('/images-renderer?')) {
+        console.log(ReqUrl)
         event.respondWith(handleImageRequest(event.request));
     }else{
 

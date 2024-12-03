@@ -172,24 +172,36 @@ export class API {
 
         const imagePromises = allAPI.map(async ({ sha, project, score }) => {
           const headers = { sha, tenant };
+          let fromAPI = true
+          let blob
           if ('caches' in window) {
             const cache = await caches.open('api-image-cache-v1'); // Open the cache used by the service worker
             const imageUrl = `${gatewayUrl}/images-renderer?sha=${sha}`; 
                 const cachedResponse = await cache.match(imageUrl);
                 if (cachedResponse) {
+                fromAPI = false
                   // If the image is found in cache, create an Object URL from the blob
-                  const blob = await cachedResponse.blob();
-                  const { data, status } = await _storage.getData({ value: sha });
-                  const {project, score, id, clr} = data[0]
-                  return { blob, project, score, id, clr }
+                  blob = await cachedResponse.blob();
                 }
             }
           // Fetch the image as a blob from your API endpoint
-          const response = await fetch(`${gatewayUrl}/images-renderer`, { headers });
-          const blob = await response.blob();
-          const store = await this.storeImageDB({ sha, project, score });
-          await this.storeImageInCache(sha, blob);
-          return { blob, project, store };
+          if (fromAPI) {
+            const response = await fetch(`${gatewayUrl}/images-renderer`, { headers });
+            blob = await response.blob();
+            const store = await this.storeImageDB({ sha, project, score });
+            await this.storeImageInCache(sha, blob);
+          }
+          const { data, status } = await _storage.getData({ value: sha });
+          const { id, clr}  = data[0]
+
+            return {
+                blobUrl: URL.createObjectURL(blob),
+                id,
+                project,
+                ...(score !== undefined && { score }),
+                ...(clr !== undefined && { clr }),
+                revokeUrl: () => URL.revokeObjectURL(blob)
+            }
         });
       
         return await Promise.all(imagePromises); // Return results (blobs and store metadata)

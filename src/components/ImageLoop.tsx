@@ -118,8 +118,8 @@ let lastProject = ''
 
     return (
       <>
-        <div ref={contentContainerRef} className="image-content-grid">
-        {images.map(({ blob, id, project, score, clr, placeholder = false }) => {
+        <div key={'init'} ref={contentContainerRef} className="image-content-grid">
+        {images.map(({ blobUrl, id, project, score, clr, placeholder = false }) => {
           const isNewProject = project !== lastProject;
           lastProject = project;
           return (
@@ -130,12 +130,12 @@ let lastProject = ''
                 </div>
               )}
               <div className={`igc`}
-                onClick={() => imgClick(id)} data-index={id}>
+                onClick={() => imgClick(id)} key={id}>
                 {!placeholder && (
                   <img
                     loading="lazy"
                     className={incompleteItems.includes(id) ? 'imgD missing' : 'imgD'}
-                    src={URL.createObjectURL(blob)}
+                    src={blobUrl}
                     alt="image"
                   />
                 )}
