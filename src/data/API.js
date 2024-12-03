@@ -28,6 +28,28 @@ export class API {
         }
     };
 
+
+    searchResult = async (searchterm) => {
+        const headers = {
+            searchterm,
+            tenant
+        } 
+        try {
+            const options = {
+                url: `${gatewayUrl}/search-result`,
+                method: 'GET',
+                headers
+            };
+            const response = await axios(options);
+            console.log(response)
+            const result = response.data.result
+            return result;
+        } catch (error) {
+            console.error('Error sending image:', error);
+            throw error;
+        }
+    };
+
     getProject = async (project) => {
         const headers = {
             project,
@@ -169,8 +191,7 @@ export class API {
     };
 
     getImageBatchAPI = async (allAPI) => {
-
-        const imagePromises = allAPI.map(async ({ sha, project, score }) => {
+        const imagePromises = allAPI.map(async ({ sha, project, score, description, title }) => {
           const headers = { sha, tenant };
           let fromAPI = true
           let blob
@@ -200,6 +221,8 @@ export class API {
                 project,
                 ...(score !== undefined && { score }),
                 ...(clr !== undefined && { clr }),
+                ...(description !== undefined && { description }),
+                ...(title !== undefined && { title }),
                 revokeUrl: () => URL.revokeObjectURL(blob)
             }
         });

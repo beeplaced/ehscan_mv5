@@ -4,7 +4,7 @@ const defaultStorageValues = {
     language: 'en',
     userPreferences: {},
 };
-localStorage.clear();
+//localStorage.clear();
 let settings = JSON.parse(localStorage.getItem('settings')) || {
     darkmode: false,
     imagerepeat: 5,

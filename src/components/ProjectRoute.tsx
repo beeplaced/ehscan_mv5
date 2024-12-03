@@ -11,8 +11,7 @@ const ProjectRoute: React.FC = ({project}) => {
 
   return (
     <>
-    <div className="container-triangle" onClick={() => clickNavigate(project)}>
-  <div className="triangle"></div>
+  <div className="container-triangle" onClick={() => clickNavigate(project)}>
   <div className="text-box _t">{project}</div>
 </div>
     </>

@@ -306,30 +306,15 @@ box-shadow:var(--window-box-shadow)
 
 /* Triangle */
 
-.container-triangle {
-    --tr-px: 15px;
-    --tr-bck-clr: white;
-    display: flex;
-    align-items: stretch;
-}
-
-.triangle {
-  width: 0;
-  height: 0;
-  border-top: var(--tr-px) solid transparent;
-  border-bottom: var(--tr-px) solid transparent;
-  border-right: 12px solid var(--tr-bck-clr); /* Triangle color */
-}
-
 .text-box {
-  background-color: var(--tr-bck-clr);
+  background-color: white;
   font-weight: 500;
   font-size: small;
   display: flex;
   align-items: center;
-  padding: 0 8px 0 5px;
+  padding: 4px 8px;
   justify-content: left;
-  border-radius: 0 6px 6px 0 ;
+  border-radius: 6px;
 }
 
 .project-dongle{

@@ -11,6 +11,7 @@ const tokens = [
             { token: 'riskAssessment', en: 'Risk Assessment', de: 'Gefährdungsbeurteilung' },           
             { token: 'close', en: 'close', de: 'schließen' },
             { token: 'cancel', en: 'cancel', de: 'abbrechen' },
+            { token: 'searchImages', en: 'search Images', de: 'Durchsuchen' },            
             { token: 'downloadChecklist', en: 'download Checklist', de: 'checkliste herunterladen' },
             { token: 'downloadReport', en: 'download Report', de: 'Bericht herunterladen' },           
             { token: 'settings', en: 'Settings', de: 'Einstellungen' },

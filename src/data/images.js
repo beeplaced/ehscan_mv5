@@ -30,14 +30,29 @@ export class ImageRenderer {
             // console.log(output)
             // allImages = output.data
             const allAPI = await api.getProjectImageInfo(project) //load project from DB
+            console.log('create Blobs:', this.executionTime(startTime));
             const APIDATA = await api.getImageBatchAPI(allAPI)
             console.log(APIDATA)
-            console.log('create Blobs:', this.executionTime(startTime));
             resolve(APIDATA)
         } catch (error) {
             console.log(error)
         }
         })
+    }
+
+    imagesBySearchResult = async (searchterm) => {
+        return new Promise(async (resolve) => {
+            try{
+                let startTime = performance.now();
+                const allAPI = await api.searchResult(searchterm)
+                console.log('create Blobs:', this.executionTime(startTime));
+                const APIDATA = await api.getImageBatchAPI(allAPI)
+                console.log(APIDATA)
+                resolve(APIDATA)
+            } catch (error) {
+                console.log(error)
+            }
+            })
     }
 
     imgByID = async (id) => {

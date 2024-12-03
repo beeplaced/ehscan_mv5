@@ -10,6 +10,7 @@ import ProjectCheckList from './routes/ProjectCheckList';
 import ProjectView from './routes/ProjectView';
 import ProjectOverview from './routes/ProjectOverview';
 import Settings from './routes/Settings';
+import Search from './routes/Search';
 import Account from './routes/Account';
 import { WebSocketProvider } from './tools/WebSocketContext';
 
@@ -25,6 +26,7 @@ const App: React.FC = () => {
         <Route path="/assessment/:id" element={<ProjectResult />} />
         <Route path="/checklist/:id" element={<ProjectCheckList />} />
         <Route path="/projectoverview/" element={<ProjectOverview />} />
+        <Route path="/search/" element={<Search />} />
         <Route path="/settings/" element={<Settings />} />
         <Route path="/account/" element={<Account />} />
       </Routes>

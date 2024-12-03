@@ -14,6 +14,8 @@ const FloatingActionButtons = ({ isOpen, setIsOpen, setShowDialog, project, type
 
   const menus = {
     default: [
+    {txt: 'searchImages', click: 'searchImages'},
+    {txt: '-' },
     {txt: 'projectOverview', click: 'allProjects'},
     {txt: 'createNewProject', click: 'newProject'},
     {txt: '-' },
@@ -55,6 +57,9 @@ const FloatingActionButtons = ({ isOpen, setIsOpen, setShowDialog, project, type
         case 'analyze':
         navigate(`/assessment/${project}`);  
         break;
+        case 'searchImages':
+        navigate(`/search`);  
+        break;       
         case 'projectChecklist':
         navigate(`/checklist/${project}`);  
         break;       

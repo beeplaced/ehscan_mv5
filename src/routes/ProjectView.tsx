@@ -52,7 +52,6 @@ import Loader from '../tools/Loader';
 
   const handleFileInput = async (e) => {
     const selectedFiles = e.target.files
-    console.log(selectedFiles)
     if (!selectedFiles || selectedFiles.length === 0) return; // Early return if no files are selected
     const fileArray = Array.from(selectedFiles);
     const addBlobs = await ImageData.addImages(fileArray)
@@ -80,12 +79,7 @@ import Loader from '../tools/Loader';
       <main ref={scrollRef} className={`content image-result ${!loading ? 'fade-in' : ''}`}>
           <div className='image-project-view'>
           { images.length === 0 ? ( <div className='no-results'>Nothing here yet, upload Image</div> ) : (  
-          <>
-          {<ImageLoop
-          loading={loading}
-          images={images}
-          setImages={setImages}
-          /> }
+          <> {<ImageLoop loading={loading} images={images} setImages={setImages} /> }
           </>
         ) }
           </div>
@@ -93,7 +87,6 @@ import Loader from '../tools/Loader';
         {<ImageFooter edit={edit} project={title} handleFileInput={handleFileInput} pop={pop} showDialog={showDialog} setShowDialog={setShowDialog} /> }
       </div>
       </>
-
     </>
   );
 };
