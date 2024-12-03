@@ -41,6 +41,9 @@ export class ImageRenderer {
     }
 
     JustImagesFromDB = async (project) => {
+
+        const allAPI = await api.getProjectImageInfo(project) //load project from DB
+        await this.addMissingDatainDB(allAPI); 
         const { data } = await _storage.getData({ value: project, field: 'project' });
         return await this.createValidImageObjects(data, project)
 
