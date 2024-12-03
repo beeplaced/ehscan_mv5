@@ -1,4 +1,4 @@
-const CACHE_NAME = 'my-app-cache-v1.20'; // Update version when there are changes
+const CACHE_NAME = 'my-app-cache-v1.21'; // Update version when there are changes
 const IMAGE_CACHE_NAME = 'api-image-cache-v1'; // Cache name
 const ASSETS_TO_CACHE = [
     '/',
