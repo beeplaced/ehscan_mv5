@@ -396,7 +396,6 @@ export class IndexedDB {
     }
 
     updateData = async (newData) => {
-        alert('update')
         const db = await this.dbPromise;
         return new Promise((resolve, reject) => {
 
