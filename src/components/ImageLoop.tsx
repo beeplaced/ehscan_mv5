@@ -129,13 +129,11 @@ let lastProject = ''
                   <ProjectRoute project={project} />
                 </div>
               )}
-              <div className={`igc ${placeholder ? 'img-ph' : ''}`}
-                onClick={() => imgClick(id)}
-                data-index={id}
-                data-image-index={id}
-                data-title={project || undefined}>
+              <div className={`igc`}
+                onClick={() => imgClick(id)} data-index={id}>
                 {!placeholder && (
                   <img
+                    loading="lazy"
                     className={incompleteItems.includes(id) ? 'imgD missing' : 'imgD'}
                     src={imgBlob}
                     alt="image"
