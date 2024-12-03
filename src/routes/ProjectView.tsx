@@ -25,7 +25,7 @@ import Loader from '../tools/Loader';
       (async () => {
         setLoading(true)
         //await ImageData.loadProjectImages(id)
-        await ImageData.ReloadImagesFromServer(id)
+        await ImageData.JustImagesFromDB(id)
         const { blobs } = ImageData
         const projectBlobs = blobs[id]
         setImages(projectBlobs)  

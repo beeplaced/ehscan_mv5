@@ -40,6 +40,12 @@ export class ImageRenderer {
         })
     }
 
+    JustImagesFromDB = async (project) => {
+        const { data } = await _storage.getData({ value: project, field: 'project' });
+        await this.createValidImageObjects(data, project)
+
+    }
+
     ReloadImagesFromServer = async (project) => {
         let startTime = performance.now();
         this.project = project

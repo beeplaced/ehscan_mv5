@@ -31,6 +31,21 @@
 - [x] Change Results
 - [x] Download Report
 
+  /**
+   * Detect iOS devices
+   * @returns {boolean} Whether the current device is iOS
+   */
+  static isIOSDevice = () => {
+    return [
+      'iPad Simulator',
+      'iPhone Simulator',
+      'iPod Simulator',
+      'iPad',
+      'iPhone',
+      'iPod'
+    ].includes(navigator.platform) || 
+    (navigator.userAgent.includes('Mac') && 'ontouchend' in document);
+  };
 
 # Visuals
 
